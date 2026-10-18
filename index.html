@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>《501飛鏢遊戲》v1.2</title>
+<title>《501飛鏢遊戲》v1.2 - 難度檔位版</title>
 <style>
   :root {
     --bg-dark: #0f1218;
@@ -45,36 +45,53 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     z-index: 20;
   }
 
   .brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     font-weight: 800;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     color: var(--gold);
+    flex-wrap: wrap;
   }
 
   .mode-badge {
     background: var(--bg-card);
     color: var(--text-main);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     padding: 3px 8px;
     border-radius: 6px;
     border: 1px solid var(--border);
   }
 
+  .diff-badge {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    transition: all 0.15s ease;
+  }
+
+  .diff-CASUAL { background: rgba(42, 157, 143, 0.2); color: #5eead4; border-color: #2a9d8f; }
+  .diff-STANDARD { background: rgba(245, 197, 66, 0.18); color: var(--gold); border-color: var(--gold); }
+  .diff-PRO { background: rgba(239, 68, 68, 0.22); color: #fca5a5; border-color: var(--danger); }
+
   .header-right {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .timer-box {
     font-family: monospace;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     background: var(--bg-card);
     padding: 4px 10px;
     border-radius: 6px;
@@ -89,7 +106,7 @@
     border: 1px solid var(--border);
     padding: 8px 14px;
     border-radius: 8px;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -420,7 +437,7 @@
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 14px;
-    max-width: 540px;
+    max-width: 560px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
@@ -527,6 +544,7 @@
   <div class="brand">
     <span>🎯 501飛鏢 v1.2</span>
     <span id="header-mode" class="mode-badge">501 標準</span>
+    <button id="btn-quick-diff" class="diff-badge diff-STANDARD" title="點擊快速切換難度檔位">難度：🟡 標準娛樂</button>
   </div>
   <div class="header-right">
     <div id="timer-display" class="timer-box">00:00.0</div>
@@ -538,7 +556,7 @@
 <main id="app-main">
   <!-- 靶面區 -->
   <section class="board-section" id="board-wrapper">
-    <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:0.82rem; color:var(--text-muted);">
+    <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:0.82rem; color:var(--text-muted); flex-wrap:wrap; gap:4px;">
       <span id="status-banner">狀態：PLAYING（請投擲）</span>
       <span id="control-indicator">模式 A：準星點擊</span>
     </div>
@@ -547,6 +565,10 @@
       <svg id="dartboard" viewBox="-260 -260 520 520" aria-label="飛鏢靶面"></svg>
       <canvas id="fx-canvas" width="520" height="520"></canvas>
       <div id="floating-banner" class="floating-banner">180!</div>
+    </div>
+
+    <div id="diff-hint-bar" style="width:100%; text-align:center; margin-top:8px; font-size:0.78rem; color:var(--text-muted);">
+      提示：外圈縮成「綠色小圈」瞬間點擊最精準！
     </div>
 
     <div id="submode-bar" style="width:100%; margin-top:10px; display:none; gap:8px; flex-wrap:wrap; justify-content:center;"></div>
@@ -623,7 +645,7 @@
         <button id="btn-undo" disabled>↩ Undo 撤銷</button>
         <button id="btn-switch-ctrl">🎯 切換為滑動投擲</button>
         <button id="btn-restart" class="danger">🔄 重新開始</button>
-        <button id="btn-settings">⚙️ 操作與音效設定</button>
+        <button id="btn-settings">⚙️ 難度與操作設定</button>
       </div>
     </div>
   </aside>
@@ -642,7 +664,7 @@
       <button id="btn-start-practice">🎯 練習模式 (單倍/雙倍/三倍/牛眼/自由)</button>
       <button id="btn-start-challenge">⚡ 結標挑戰 (40 ~ 170 指定分數)</button>
       <button id="btn-open-stats">📊 個人統計與最佳紀錄</button>
-      <button id="btn-open-settings-menu">⚙️ 操作模式、校準與音效設定</button>
+      <button id="btn-open-settings-menu">⚙️ 難度檔位、校準與音效設定</button>
     </div>
   </div>
 </div>
@@ -651,8 +673,16 @@
 <div class="modal-overlay" id="modal-settings">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">⚙️ 操作校準、音效與顯示設定</div>
+      <div class="modal-title">⚙️ 難度檔位、操作校準與音效設定</div>
       <button id="btn-close-settings">✕</button>
+    </div>
+    <div class="form-row">
+      <label for="sel-difficulty" style="color:var(--gold); font-weight:700;">難度檔位 (影響手震、縮圈與軌跡預覽)</label>
+      <select id="sel-difficulty">
+        <option value="CASUAL">🟢 休閒 / 驗收 (100% 指哪打哪、完整預覽)</option>
+        <option value="STANDARD">🟡 標準娛樂 (微幅 8 字呼吸縮圈、適中散射)</option>
+        <option value="PRO">🔴 職業擬真 (明顯擺動 + 結標心跳加速 + 盲狙滑動)</option>
+      </select>
     </div>
     <div class="form-row">
       <label for="sel-ctrl-mode">操作模式</label>
@@ -662,15 +692,15 @@
       </select>
     </div>
     <div class="form-row">
-      <label for="rng-power">投擲力度靈敏度 (<span id="val-power">1.0</span>)</label>
+      <label for="rng-power">投擲力度靈敏度 (<span id="val-power">1.00</span>)</label>
       <input type="range" id="rng-power" min="0.5" max="1.8" step="0.05" value="1.0">
     </div>
     <div class="form-row">
-      <label for="rng-x-sens">左右偏移靈敏度 (<span id="val-x-sens">1.0</span>)</label>
+      <label for="rng-x-sens">左右偏移靈敏度 (<span id="val-x-sens">1.00</span>)</label>
       <input type="range" id="rng-x-sens" min="0.5" max="1.8" step="0.05" value="1.0">
     </div>
     <div class="form-row">
-      <label for="chk-breathing">準星呼吸擺動視覺效果</label>
+      <label for="chk-breathing">準星呼吸擺動效果</label>
       <input type="checkbox" id="chk-breathing" checked>
     </div>
     <div class="form-row">
@@ -737,7 +767,7 @@
   "use strict";
 
   /**************************************************************
-   * 1. 常數與靶面幾何設定 (第五章)
+   * 1. 常數、難度檔位參數與靶面幾何設定
    **************************************************************/
   const SECTORS = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
   const R_INNER_BULL = 14;
@@ -749,6 +779,50 @@
   const R_BOARD_EDGE = 235;
 
   const CHALLENGE_TARGETS = [40, 50, 61, 80, 100, 121, 141, 170];
+
+  // 三段難度檔位定義
+  const DIFFICULTY_PROFILES = {
+    CASUAL: {
+      name: "🟢 休閒 / 驗收",
+      desc: "休閒 / 驗收檔位：100% 指哪打哪，無手震散射，顯示完整軌跡預覽。",
+      swayAmp: 0,           // 點擊時不偏移實際座標
+      visualBreathAmp: 3.0, // 純視覺呼吸擺動
+      minSpread: 0,
+      maxSpread: 0,
+      SpreadSigmaRatio: 0,
+      swipeSigma: 0,
+      trajectoryRatio: 1.0, // 100% 畫出預估落點
+      showSwipeLandingDot: true,
+      clutchMultiplier: 1.0
+    },
+    STANDARD: {
+      name: "🟡 標準娛樂",
+      desc: "標準娛樂檔位：準星呈 8 字微幅呼吸擺動，外圈縮成「綠色小圈」時出手最準！",
+      swayAmp: 8.5,         // 8字擺動幅度 (px)
+      visualBreathAmp: 8.5,
+      minSpread: 2.0,       // 縮圈最小半徑
+      maxSpread: 13.0,      // 縮圈最大半徑
+      SpreadSigmaRatio: 0.42,
+      swipeSigma: 5.0,      // 滑動出手高斯標準差
+      trajectoryRatio: 0.65,// 顯示前 65% 導引線
+      showSwipeLandingDot: false,
+      clutchMultiplier: 1.2
+    },
+    PRO: {
+      name: "🔴 職業擬真",
+      desc: "職業擬真檔位：明顯手部擺動 + 結標心跳加速手抖，滑動僅顯示前段方向導引（盲狙手感）！",
+      swayAmp: 13.5,
+      visualBreathAmp: 13.5,
+      minSpread: 2.8,
+      maxSpread: 19.5,
+      SpreadSigmaRatio: 0.52,
+      swipeSigma: 8.2,
+      trajectoryRatio: 0.40,// 僅顯示前 40% 出手方向線
+      showSwipeLandingDot: false,
+      clutchMultiplier: 1.5 // 進入結標區 (<=50分) 時心跳與晃動顯著加快
+    }
+  };
+
   const STORAGE_KEYS = {
     SETTINGS: "darts501_v12_settings",
     ACTIVE_GAME: "darts501_v12_active_game",
@@ -758,9 +832,10 @@
   };
 
   /**************************************************************
-   * 2. 預設設定與統計結構 (第十章、第十一章、第十四章)
+   * 2. 預設設定與統計結構
    **************************************************************/
   const defaultSettings = () => ({
+    difficulty: "STANDARD", // CASUAL | STANDARD | PRO
     controlMode: "CROSSHAIR", // CROSSHAIR | SWIPE
     powerSens: 1.0,
     xSens: 1.0,
@@ -816,7 +891,7 @@
   let statsChallenge = defaultStatsChallenge();
 
   /**************************************************************
-   * 3. localStorage 安全讀寫封裝 (第十四章)
+   * 3. localStorage 安全讀寫封裝
    **************************************************************/
   function checkStorage() {
     try {
@@ -853,7 +928,7 @@
   }
 
   /**************************************************************
-   * 4. Web Audio API 合成音效系統 (第八章 8.5)
+   * 4. Web Audio API 合成音效系統
    **************************************************************/
   let audioCtx = null;
 
@@ -956,15 +1031,14 @@
         });
       }
     } catch (e) {
-      // 忽略音訊錯誤，不影響計分
+      // 忽略音訊錯誤
     }
   }
 
   /**************************************************************
-   * 5. 智能結標路線與霓虹目標引擎 (第六章、第七章)
+   * 5. 智能結標路線與霓虹目標引擎
    **************************************************************/
   const ALL_TARGETS = [];
-  // 建立合法投擲目標清單 (優先排序直覺路線)
   ALL_TARGETS.push({ code: "BULL", label: "內牛眼 50", score: 50, isDouble: true, ring: "INNER_BULL", sector: 25 });
   for (let s = 20; s >= 1; s--) {
     ALL_TARGETS.push({ code: `D${s}`, label: `D${s}`, score: s * 2, isDouble: true, ring: "DOUBLE", sector: s });
@@ -978,7 +1052,6 @@
   }
 
   const DOUBLE_TARGETS = ALL_TARGETS.filter(t => t.isDouble);
-  // 首選高分推進順序 (T20, T19, T18, T17...)
   const FIRST_DART_PREF = [
     ...ALL_TARGETS.filter(t => t.ring === "TRIPLE"),
     ALL_TARGETS.find(t => t.code === "BULL"),
@@ -993,16 +1066,12 @@
     }
     const routes = [];
 
-    // 1 鏢結標
     if (dartsLeft >= 1) {
       for (const d of DOUBLE_TARGETS) {
-        if (d.score === remScore) {
-          routes.push([d]);
-        }
+        if (d.score === remScore) routes.push([d]);
       }
     }
 
-    // 2 鏢結標
     if (dartsLeft >= 2 && routes.length < 4) {
       for (const first of FIRST_DART_PREF) {
         const remAfter1 = remScore - first.score;
@@ -1017,7 +1086,6 @@
       }
     }
 
-    // 3 鏢結標
     if (dartsLeft >= 3 && routes.length < 4) {
       for (const first of FIRST_DART_PREF) {
         const rem1 = remScore - first.score;
@@ -1037,7 +1105,6 @@
       }
     }
 
-    // 驗證每條路線最後一鏢為合法雙倍且總和恰好為 remScore
     const validRoutes = routes.filter(r => {
       const sum = r.reduce((acc, item) => acc + item.score, 0);
       const last = r[r.length - 1];
@@ -1051,7 +1118,7 @@
   }
 
   /**************************************************************
-   * 6. 靶面繪製與命中座標判定 (第五章)
+   * 6. 靶面繪製與命中座標判定
    **************************************************************/
   const svgBoard = document.getElementById("dartboard");
   let segmentElements = {};
@@ -1085,7 +1152,6 @@
     svgBoard.innerHTML = "";
     segmentElements = {};
 
-    // 外圈黑底
     const outerBg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     outerBg.setAttribute("cx", "0");
     outerBg.setAttribute("cy", "0");
@@ -1106,7 +1172,6 @@
       const singleColor = isEven ? "#141820" : "#f3ead8";
       const ringColor = isEven ? "#d62828" : "#1b9aaa";
 
-      // 內單倍區
       const pSingleIn = document.createElementNS("http://www.w3.org/2000/svg", "path");
       pSingleIn.setAttribute("d", createAnnularSectorPath(R_OUTER_BULL, R_TRIPLE_IN, startAngle, endAngle));
       pSingleIn.setAttribute("fill", singleColor);
@@ -1114,7 +1179,6 @@
       pSingleIn.setAttribute("stroke-width", "0.8");
       segGroup.appendChild(pSingleIn);
 
-      // 外單倍區
       const pSingleOut = document.createElementNS("http://www.w3.org/2000/svg", "path");
       pSingleOut.setAttribute("d", createAnnularSectorPath(R_TRIPLE_OUT, R_DOUBLE_IN, startAngle, endAngle));
       pSingleOut.setAttribute("fill", singleColor);
@@ -1123,7 +1187,6 @@
       segGroup.appendChild(pSingleOut);
       segmentElements[`S${num}`] = [pSingleIn, pSingleOut];
 
-      // 三倍環
       const pTriple = document.createElementNS("http://www.w3.org/2000/svg", "path");
       pTriple.setAttribute("d", createAnnularSectorPath(R_TRIPLE_IN, R_TRIPLE_OUT, startAngle, endAngle));
       pTriple.setAttribute("fill", ringColor);
@@ -1132,7 +1195,6 @@
       segGroup.appendChild(pTriple);
       segmentElements[`T${num}`] = [pTriple];
 
-      // 雙倍環
       const pDouble = document.createElementNS("http://www.w3.org/2000/svg", "path");
       pDouble.setAttribute("d", createAnnularSectorPath(R_DOUBLE_IN, R_DOUBLE_OUT, startAngle, endAngle));
       pDouble.setAttribute("fill", ringColor);
@@ -1141,7 +1203,6 @@
       segGroup.appendChild(pDouble);
       segmentElements[`D${num}`] = [pDouble];
 
-      // 靶面外圍數字
       const labelPos = polarToCartesian(0, 0, 212, centerAngle);
       const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
       txt.setAttribute("x", labelPos.x.toFixed(2));
@@ -1155,7 +1216,6 @@
       svgBoard.appendChild(txt);
     });
 
-    // 外牛眼 (25)
     const outerBull = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     outerBull.setAttribute("cx", "0");
     outerBull.setAttribute("cy", "0");
@@ -1166,7 +1226,6 @@
     svgBoard.appendChild(outerBull);
     segmentElements["OBULL"] = [outerBull];
 
-    // 內牛眼 (50 / D25)
     const innerBull = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     innerBull.setAttribute("cx", "0");
     innerBull.setAttribute("cy", "0");
@@ -1177,14 +1236,12 @@
     svgBoard.appendChild(innerBull);
     segmentElements["BULL"] = [innerBull];
 
-    // 預覽與飛鏢落點圖層
     previewLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
     dynamicLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
     svgBoard.appendChild(previewLayer);
     svgBoard.appendChild(dynamicLayer);
   }
 
-  // 座標命中判定 (第五章 5.2)
   function evaluateHitFromCoords(x, y) {
     if (!Number.isFinite(x) || !Number.isFinite(y)) {
       return { score: 0, multiplier: 0, isDouble: false, code: "MISS", label: "靶外 0", x: 0, y: 0 };
@@ -1200,7 +1257,6 @@
       return { score: 0, multiplier: 0, isDouble: false, code: "MISS", label: "靶外 0", sector: 0, x, y };
     }
 
-    // 計算角度 (以正上方 12 點鐘方向為 0 度，順時針增加)
     let deg = (Math.atan2(x, -y) * 180) / Math.PI;
     if (deg < 0) deg += 360;
     const sectorIdx = Math.floor(((deg + 9) % 360) / 18);
@@ -1216,7 +1272,7 @@
   }
 
   /**************************************************************
-   * 7. 粒子與視覺回饋系統 (第八章)
+   * 7. 粒子與視覺回饋系統
    **************************************************************/
   const fxCanvas = document.getElementById("fx-canvas");
   const fxCtx = fxCanvas.getContext("2d");
@@ -1289,11 +1345,11 @@
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 1800);
+    setTimeout(() => t.classList.remove("show"), 1900);
   }
 
   /**************************************************************
-   * 8. 遊戲核心狀態與 Undo 快照管理 (第二章、第三章、第九章)
+   * 8. 遊戲核心狀態與 Undo 快照管理
    **************************************************************/
   let game = null;
 
@@ -1301,17 +1357,17 @@
     const startScore = mode === "501" ? 501 : mode === "CHALLENGE" ? (subOption || 40) : 0;
     return {
       matchId: "M_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
-      mode, // "501" | "PRACTICE" | "CHALLENGE"
+      mode,
       practiceFilter: mode === "PRACTICE" ? (subOption || "FREE") : "FREE",
       challengeTarget: mode === "CHALLENGE" ? (subOption || 40) : null,
-      state: "PLAYING", // READY, PLAYING, THROWING, ROUND_END, BUST, WON, PAUSED, PRACTICE, CHECKOUT_CHALLENGE
+      state: "PLAYING",
       remScore: startScore,
       roundStartScore: startScore,
       roundNumber: 1,
       dartsInTurn: 0,
       currentTurnThrows: [],
       allThrows: [],
-      undoStack: [], // 完整保存每次投擲前的狀態與統計快照
+      undoStack: [],
       elapsedMs: 0,
       lastTickTs: performance.now(),
       timerRunning: true,
@@ -1323,7 +1379,6 @@
     return JSON.parse(JSON.stringify(obj));
   }
 
-  // 計時器更新 (第十三章 13.1：以實際經過時間為基準)
   function updateTimerLoop() {
     if (game && game.timerRunning && (game.state === "PLAYING" || game.state === "ROUND_END" || game.state === "BUST")) {
       const now = performance.now();
@@ -1351,7 +1406,7 @@
   }
 
   /**************************************************************
-   * 9. 計分判定優先順序與 Undo 系統 (第三章 3.5、第九章)
+   * 9. 計分判定優先順序與 Undo 系統
    **************************************************************/
   function canAcceptThrow() {
     if (!game) return false;
@@ -1361,11 +1416,9 @@
   }
 
   function commitDartThrow(svgX, svgY) {
-    // 步驟 6：確認目前允許投擲，且手勢尚未提交
     if (!canAcceptThrow()) return;
     game.state = "THROWING";
 
-    // 建立 Undo 完整快照（包含目前對局與三個獨立統計狀態）
     const snapshot = {
       remScore: game.remScore,
       roundStartScore: game.roundStartScore,
@@ -1382,10 +1435,8 @@
     };
     game.undoStack.push(snapshot);
 
-    // 步驟 7：根據靶面座標計算命中區域
     const hit = evaluateHitFromCoords(svgX, svgY);
 
-    // 練習模式子項目過濾檢查
     let effectiveScore = hit.score;
     let practiceNote = "";
     if (game.mode === "PRACTICE" && game.practiceFilter !== "FREE") {
@@ -1400,14 +1451,12 @@
       }
     }
 
-    // 判斷投擲前是否處於合法結標機會 (剩餘 <= 170 且存在 1 鏢雙倍結標可能)
     const hadOneDartDoubleOpportunity =
       (game.mode === "501" || game.mode === "CHALLENGE") &&
       (game.remScore === 50 || (game.remScore <= 40 && game.remScore >= 2 && game.remScore % 2 === 0));
 
     game.dartsInTurn += 1;
 
-    // 步驟 8：計算本鏢得分與候選剩餘分數
     if (game.mode === "PRACTICE") {
       game.remScore += effectiveScore;
       const rec = {
@@ -1422,7 +1471,6 @@
       game.currentTurnThrows.push(rec);
       game.allThrows.push(rec);
 
-      // 更新練習統計
       statsPractice.totalDarts += 1;
       statsPractice.totalScore += effectiveScore;
       if (effectiveScore > statsPractice.bestSingleDart) statsPractice.bestSingleDart = effectiveScore;
@@ -1442,16 +1490,13 @@
       return;
     }
 
-    // 501 標準對局 或 結標挑戰模式
     const candidateRem = game.remScore - effectiveScore;
 
-    // 步驟 9：判定 Bust 條件 (小於 0、恰好為 1、或為 0 但非合法雙倍)
     const isBust =
       candidateRem < 0 ||
       candidateRem === 1 ||
       (candidateRem === 0 && !hit.isDouble);
 
-    // 步驟 10：若未 Bust，判定 Double Out 勝利
     const isWin = !isBust && candidateRem === 0 && hit.isDouble;
 
     if (hadOneDartDoubleOpportunity) {
@@ -1464,7 +1509,6 @@
       if (candidateRem === 1) bustReason = "Bust（剩餘 1 分無法雙倍結標）";
       else if (candidateRem === 0 && !hit.isDouble) bustReason = "Bust（最後一鏢非雙倍/內牛眼）";
 
-      // Bust 發生時剩餘分數恢復至本回合起始值
       game.remScore = game.roundStartScore;
       const rec = {
         round: game.roundNumber,
@@ -1476,14 +1520,12 @@
         status: "BUST",
         note: bustReason
       };
-      // 將本回合先前已投的飛鏢標記為因 Bust 失效
       game.currentTurnThrows.forEach(t => { t.invalidatedByBust = true; });
       game.currentTurnThrows.push(rec);
       game.allThrows.push(rec);
 
       if (game.mode === "501") {
         stats501.totalBusts += 1;
-        // 退回本回合前幾鏢已加進去的統計
         const prevValidInTurn = game.currentTurnThrows.slice(0, -1);
         prevValidInTurn.forEach(pt => {
           stats501.totalValidDarts = Math.max(0, stats501.totalValidDarts - 1);
@@ -1497,13 +1539,11 @@
       showFloatingBanner("BUST!", "var(--danger)");
       game.state = "BUST";
 
-      // 結標挑戰若 Bust 直接結束該次挑戰，也可選擇下一回合重試或 Undo
       saveAllState();
       renderAll();
       return;
     }
 
-    // 有效得分
     game.remScore = candidateRem;
     const rec = {
       round: game.roundNumber,
@@ -1517,7 +1557,6 @@
     game.currentTurnThrows.push(rec);
     game.allThrows.push(rec);
 
-    // 更新單鏢統計
     if (game.mode === "501") {
       stats501.totalValidDarts += 1;
       stats501.totalValidScore += effectiveScore;
@@ -1543,7 +1582,6 @@
       return;
     }
 
-    // 步驟 11：若未結束對局，判定回合是否已投滿三鏢
     const isTurnComplete = game.dartsInTurn >= 3;
     const is180 = isTurnComplete && turnTotal === 180;
 
@@ -1562,17 +1600,14 @@
         if (turnTotal > statsChallenge.bestRound) {
           statsChallenge.bestRound = turnTotal;
         }
-        // 結標挑戰三鏢用完仍未結標 -> 挑戰失敗
         statsChallenge.targets[game.challengeTarget].fails += 1;
         showFloatingBanner("挑戰未達成!", "var(--danger)");
       }
-      // 自動推進或進入本回合結束狀態（為讓玩家清楚看落點，直接自動開啟新回合並保留落點至下一鏢投出前，或點按鈕）
       advanceToNextRound();
     } else {
       game.state = "PLAYING";
     }
 
-    // 步驟 12：更新歷史、統計、動畫與自動存檔
     saveAllState();
     renderAll();
   }
@@ -1580,7 +1615,6 @@
   function advanceToNextRound() {
     if (!game) return;
     if (game.mode === "CHALLENGE") {
-      // 結標挑戰失敗後重置回該挑戰起始分數供再次挑戰
       game.remScore = game.challengeTarget;
       game.roundStartScore = game.challengeTarget;
       game.roundNumber += 1;
@@ -1669,7 +1703,6 @@
     }
   }
 
-  // 第九章：Undo 撤銷系統
   function performUndo() {
     if (!game || !game.undoStack || game.undoStack.length === 0) return;
     if (game.state === "THROWING") return;
@@ -1686,7 +1719,6 @@
     game.lastTickTs = performance.now();
     game.settled = snap.settled;
 
-    // 完整還原統計，確保已撤銷的 180、勝利或最高分不殘留
     stats501 = snap.stats501;
     statsPractice = snap.statsPractice;
     statsChallenge = snap.statsChallenge;
@@ -1698,9 +1730,14 @@
   }
 
   /**************************************************************
-   * 10. 雙操作模式：Crosshair Breathing & Swipe Throw (第四章)
+   * 10. 雙操作模式 + 三段難度物理映射 (Crosshair & Swipe)
    **************************************************************/
   let pointerPos = { x: 0, y: 0, active: false };
+  let aimState = {
+    offsetX: 0,
+    offsetY: 0,
+    spreadRadius: 0
+  };
   let swipeState = {
     active: false,
     pointerId: null,
@@ -1711,6 +1748,19 @@
     startTime: 0,
     previewTarget: { x: 0, y: 0 }
   };
+
+  // 常態分佈隨機數 (Box-Muller)
+  function gaussianRandom(mean = 0, stdev = 1) {
+    if (stdev <= 0) return mean;
+    const u = 1 - Math.random();
+    const v = Math.random();
+    const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    return z * stdev + mean;
+  }
+
+  function getActiveDiffProfile() {
+    return DIFFICULTY_PROFILES[settings.difficulty] || DIFFICULTY_PROFILES.STANDARD;
+  }
 
   function clientToSvgCoords(clientX, clientY) {
     const rect = svgBoard.getBoundingClientRect();
@@ -1725,24 +1775,21 @@
 
   function computeSwipeLanding(sState) {
     const dx = sState.currX - sState.startX;
-    const dy = sState.currY - sState.startY; // 向上拖曳時 dy 為負值
-    const dt = Math.max(18, performance.now() - sState.startTime);
+    const dy = sState.currY - sState.startY;
+    const holdTimeMs = Math.max(18, performance.now() - sState.startTime);
     const upDist = Math.max(0, -dy);
-    const speed = (upDist / dt) * 1000; // px / sec
+    const speed = (upDist / holdTimeMs) * 1000;
 
-    // 第四章 4.2：速度係數 speed/650 結合垂直距離與靈敏度映射
     const speedFactor = (speed / 650) * settings.powerSens;
     const distFactor = (upDist / 190) * settings.powerSens;
     const combinedPower = (distFactor * 0.65 + speedFactor * 0.35);
 
-    // 起始瞄準在底部 (y = +210)，隨力度往上推進至靶面頂端
     const rawY = 210 - combinedPower * 270;
     const rawX = dx * 1.15 * settings.xSens;
 
-    // 限制在可控範圍內，避免極端手勢跑出畫面外無限遠
     const clampedX = Math.max(-245, Math.min(245, rawX));
     const clampedY = Math.max(-245, Math.min(245, rawY));
-    return { x: clampedX, y: clampedY, upDist };
+    return { x: clampedX, y: clampedY, upDist, holdTimeMs };
   }
 
   function setupBoardInputEvents() {
@@ -1772,10 +1819,18 @@
       pointerPos.active = true;
 
       if (settings.controlMode === "CROSSHAIR") {
-        // 4.1：點擊靶面即提交投擲，呼吸動畫不改變實際命中座標
-        commitDartThrow(pt.x, pt.y);
+        const profile = getActiveDiffProfile();
+        if (settings.difficulty === "CASUAL") {
+          // 休閒/驗收檔位：100% 依點擊座標命中，不加任何偏移
+          commitDartThrow(pt.x, pt.y);
+        } else {
+          // 標準娛樂 / 職業擬真：套用當下 8字晃動偏移 + 縮圈高斯散射
+          const sigma = aimState.spreadRadius * profile.SpreadSigmaRatio;
+          const finalX = pt.x + aimState.offsetX + gaussianRandom(0, sigma);
+          const finalY = pt.y + aimState.offsetY + gaussianRandom(0, sigma);
+          commitDartThrow(finalX, finalY);
+        }
       } else {
-        // 4.2：開始 Swipe 手勢
         container.setPointerCapture(e.pointerId);
         swipeState.active = true;
         swipeState.pointerId = e.pointerId;
@@ -1795,13 +1850,23 @@
         swipeState.active = false;
         swipeState.pointerId = null;
         previewLayer.innerHTML = "";
-        // 向上拖曳距離太短視為取消手勢，不消耗飛鏢 (B07)
+
         if (landing.upDist < 14) {
           showToast("手勢過短已取消，未消耗飛鏢");
           return;
         }
-        // 4.2：放開提交後實際落點與最終計算結果一致
-        commitDartThrow(landing.x, landing.y);
+
+        const profile = getActiveDiffProfile();
+        if (settings.difficulty === "CASUAL") {
+          commitDartThrow(landing.x, landing.y);
+        } else {
+          // 若在 PRO 模式按住超過 1.8 秒未放開，產生額外疲勞手抖懲罰
+          const fatigueExtra = (settings.difficulty === "PRO" && landing.holdTimeMs > 1800) ? 4.5 : 0;
+          const sigma = profile.swipeSigma + fatigueExtra;
+          const finalX = landing.x + gaussianRandom(0, sigma);
+          const finalY = landing.y + gaussianRandom(0, sigma);
+          commitDartThrow(finalX, finalY);
+        }
       }
     });
 
@@ -1818,98 +1883,128 @@
     });
   }
 
-  // 繪製準星呼吸效果與 Swipe 黃金虛線軌跡
   function renderPreviewOverlay() {
     previewLayer.innerHTML = "";
     if (game && game.state === "PLAYING") {
+      const t = performance.now() / 1000;
+      const profile = getActiveDiffProfile();
+      const isClutch = (game.mode !== "PRACTICE" && game.remScore <= 50);
+      const clutchMult = isClutch ? profile.clutchMultiplier : 1.0;
+
       if (settings.controlMode === "CROSSHAIR" && pointerPos.active) {
-        const t = performance.now() / 1000;
-        // 4.1：準星可有輕微呼吸擺動，但僅屬視覺效果，不改變實際點擊命中座標
-        const breathOffset = (settings.breathing && settings.animLevel !== "OFF")
-          ? Math.sin(t * 4.2) * 3.2
-          : 0;
-        const cx = pointerPos.x;
-        const cy = pointerPos.y + breathOffset;
+        if (settings.difficulty === "CASUAL") {
+          // 休閒/驗收模式：視覺呼吸不影響實際落點
+          aimState.offsetX = 0;
+          aimState.offsetY = (settings.breathing && settings.animLevel !== "OFF") ? Math.sin(t * 4.2) * profile.visualBreathAmp : 0;
+          aimState.spreadRadius = 0;
+        } else {
+          // 標準 / 職業模式：8字形李薩如晃動 + 呼吸縮圈
+          const sway = (settings.breathing && settings.animLevel !== "OFF") ? profile.swayAmp * clutchMult : 0;
+          aimState.offsetX = Math.sin(t * 2.6 * clutchMult) * sway;
+          aimState.offsetY = Math.cos(t * 3.8 * clutchMult) * sway;
+          const wave = (Math.sin(t * 3.1 * clutchMult) + 1) / 2; // 0 ~ 1
+          aimState.spreadRadius = profile.minSpread + wave * (profile.maxSpread - profile.minSpread) * clutchMult;
+        }
+
+        const cx = pointerPos.x + aimState.offsetX;
+        const cy = pointerPos.y + aimState.offsetY;
 
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         g.setAttribute("pointer-events", "none");
 
+        const ringRadius = settings.difficulty === "CASUAL" ? 12 : Math.max(4, aimState.spreadRadius);
+        const isSweetSpot = settings.difficulty === "CASUAL" || aimState.spreadRadius <= (profile.minSpread + 3.5);
+        const strokeColor = isSweetSpot ? "#2a9d8f" : (isClutch && settings.difficulty === "PRO" ? "#ef4444" : "#f5c542");
+
         const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         ring.setAttribute("cx", cx.toFixed(2));
         ring.setAttribute("cy", cy.toFixed(2));
-        ring.setAttribute("r", "12");
+        ring.setAttribute("r", ringRadius.toFixed(2));
         ring.setAttribute("fill", "none");
-        ring.setAttribute("stroke", "#f5c542");
-        ring.setAttribute("stroke-width", "1.8");
+        ring.setAttribute("stroke", strokeColor);
+        ring.setAttribute("stroke-width", isSweetSpot ? "2.4" : "1.6");
+        if (!isSweetSpot) ring.setAttribute("stroke-dasharray", "4,3");
 
         const hLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        hLine.setAttribute("x1", (cx - 17).toFixed(2));
+        hLine.setAttribute("x1", (cx - 15).toFixed(2));
         hLine.setAttribute("y1", cy.toFixed(2));
-        hLine.setAttribute("x2", (cx + 17).toFixed(2));
+        hLine.setAttribute("x2", (cx + 15).toFixed(2));
         hLine.setAttribute("y2", cy.toFixed(2));
-        hLine.setAttribute("stroke", "#f5c542");
-        hLine.setAttribute("stroke-width", "1.4");
+        hLine.setAttribute("stroke", strokeColor);
+        hLine.setAttribute("stroke-width", "1.3");
 
         const vLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
         vLine.setAttribute("x1", cx.toFixed(2));
-        vLine.setAttribute("y1", (cy - 17).toFixed(2));
+        vLine.setAttribute("y1", (cy - 15).toFixed(2));
         vLine.setAttribute("x2", cx.toFixed(2));
-        vLine.setAttribute("y2", (cy + 17).toFixed(2));
-        vLine.setAttribute("stroke", "#f5c542");
-        vLine.setAttribute("stroke-width", "1.4");
+        vLine.setAttribute("y2", (cy + 15).toFixed(2));
+        vLine.setAttribute("stroke", strokeColor);
+        vLine.setAttribute("stroke-width", "1.3");
 
         g.appendChild(ring);
         g.appendChild(hLine);
         g.appendChild(vLine);
         previewLayer.appendChild(g);
+
       } else if (settings.controlMode === "SWIPE" && swipeState.active && settings.trajectory) {
         const target = swipeState.previewTarget;
+        const ratio = profile.trajectoryRatio;
+        const endX = swipeState.startX + (target.x - swipeState.startX) * ratio;
+        const endY = swipeState.startY + (target.y - swipeState.startY) * ratio;
+
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        const midX = (swipeState.startX + target.x) / 2;
-        const midY = Math.min(swipeState.startY, target.y) - 45;
-        path.setAttribute("d", `M ${swipeState.startX.toFixed(1)} ${swipeState.startY.toFixed(1)} Q ${midX.toFixed(1)} ${midY.toFixed(1)} ${target.x.toFixed(1)} ${target.y.toFixed(1)}`);
+        const midX = (swipeState.startX + endX) / 2;
+        const midY = Math.min(swipeState.startY, endY) - 35 * ratio;
+        path.setAttribute("d", `M ${swipeState.startX.toFixed(1)} ${swipeState.startY.toFixed(1)} Q ${midX.toFixed(1)} ${midY.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}`);
         path.setAttribute("fill", "none");
         path.setAttribute("stroke", "#f5c542");
         path.setAttribute("stroke-width", "3");
         path.setAttribute("stroke-dasharray", "6,6");
         previewLayer.appendChild(path);
 
-        const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        dot.setAttribute("cx", target.x.toFixed(1));
-        dot.setAttribute("cy", target.y.toFixed(1));
-        dot.setAttribute("r", "8");
-        dot.setAttribute("fill", "rgba(245, 197, 66, 0.35)");
-        dot.setAttribute("stroke", "#f5c542");
-        dot.setAttribute("stroke-width", "2");
-        previewLayer.appendChild(dot);
+        if (profile.showSwipeLandingDot) {
+          const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          dot.setAttribute("cx", target.x.toFixed(1));
+          dot.setAttribute("cy", target.y.toFixed(1));
+          dot.setAttribute("r", "8");
+          dot.setAttribute("fill", "rgba(245, 197, 66, 0.35)");
+          dot.setAttribute("stroke", "#f5c542");
+          dot.setAttribute("stroke-width", "2");
+          previewLayer.appendChild(dot);
+        }
       }
     }
     requestAnimationFrame(renderPreviewOverlay);
   }
 
   /**************************************************************
-   * 11. 畫面更新與渲染 (第六章、第七章、第十二章)
+   * 11. 畫面更新與渲染
    **************************************************************/
   function renderAll() {
     if (!game) return;
 
-    // 動畫等級切換
     document.body.classList.toggle("no-anim", settings.animLevel === "OFF");
 
-    // 頂部模式與狀態
     const modeNames = {
       "501": "501 標準 (Double Out)",
       "PRACTICE": `練習模式 (${game.practiceFilter})`,
       "CHALLENGE": `結標挑戰 (${game.challengeTarget}分)`
     };
     document.getElementById("header-mode").textContent = modeNames[game.mode] || "501 標準";
+
+    // 更新頂部難度快速切換按鈕與提示列
+    const profile = getActiveDiffProfile();
+    const diffBtn = document.getElementById("btn-quick-diff");
+    diffBtn.textContent = `難度：${profile.name}`;
+    diffBtn.className = `diff-badge diff-${settings.difficulty}`;
+    document.getElementById("diff-hint-bar").textContent = profile.desc;
+
     document.getElementById("status-banner").textContent = `狀態：${game.state}`;
     document.getElementById("control-indicator").textContent =
       settings.controlMode === "CROSSHAIR" ? "模式 A：準星點擊 (Crosshair)" : "模式 B：向上滑動投擲 (Swipe)";
     document.getElementById("btn-switch-ctrl").textContent =
       settings.controlMode === "CROSSHAIR" ? "🎯 切換為滑動投擲" : "🎯 切換為準星點擊";
 
-    // 分數區
     document.getElementById("rem-score").textContent = game.remScore;
     document.getElementById("rem-score-label").textContent = game.mode === "PRACTICE" ? "累計總分" : "剩餘分數";
     document.getElementById("round-counter").textContent = `第 ${game.roundNumber} 回合`;
@@ -1920,7 +2015,6 @@
     document.getElementById("turn-score").textContent = turnSum;
     document.getElementById("darts-used").textContent = `${game.dartsInTurn} / 3`;
 
-    // 本回合三鏢欄位
     for (let i = 0; i < 3; i++) {
       const slot = document.getElementById(`slot-${i}`);
       const valSpan = slot.querySelector(".dart-slot-val");
@@ -1935,23 +2029,14 @@
       }
     }
 
-    // Bust 時顯示「開始下一回合」按鈕 (3.4：必須開始下一回合才能繼續)
     const nextRoundBar = document.getElementById("next-round-bar");
     nextRoundBar.style.display = game.state === "BUST" ? "block" : "none";
 
-    // Undo 按鈕狀態
     document.getElementById("btn-undo").disabled = !game.undoStack || game.undoStack.length === 0 || game.state === "THROWING";
 
-    // 渲染子模式選單 (練習模式或結標挑戰)
     renderSubmodeBar();
-
-    // 更新智能結標路線與靶面霓虹提示
     renderTacticalAndNeon();
-
-    // 渲染飛鏢落點標記
     renderDartMarkers();
-
-    // 渲染投擲歷史列表
     renderHistoryList();
   }
 
@@ -1997,7 +2082,6 @@
   }
 
   function renderTacticalAndNeon() {
-    // 先清除所有霓虹框線
     Object.values(segmentElements).forEach(arr => {
       arr.forEach(el => el.classList.remove("neon-target"));
     });
@@ -2039,7 +2123,6 @@
     const res = computeCheckoutRoutes(game.remScore, dartsLeft);
     if (!res.canCheckout) {
       primaryEl.textContent = `剩餘 ${game.remScore} 分（${dartsLeft} 鏢內目前無法直接結標）`;
-      // 給出推進安全雙倍區建議，不標亮虛假結標目標 (C04)
       const setupTarget = game.remScore > 60 ? "T20" : game.remScore % 2 === 1 ? "S1" : "S20";
       altEl.textContent = `一般得分整分建議：先投 ${setupTarget} 留雙倍結標分`;
       return;
@@ -2057,12 +2140,10 @@
       altEl.textContent = `可用 ${dartsLeft} 鏢 | 首選目標：${bestRoute[0].label}（結標點：${lastTarget.label}）`;
     }
 
-    // 點亮當前第一鏢建議的合法目標區
     const firstStepCode = bestRoute[0].code;
     if (segmentElements[firstStepCode]) {
       segmentElements[firstStepCode].forEach(el => {
         el.classList.add("neon-target");
-        // 移至父層最後方確保霓虹邊框不被相鄰色塊壓住
         el.parentNode.appendChild(el);
       });
     }
@@ -2072,7 +2153,6 @@
     dynamicLayer.innerHTML = "";
     if (!game) return;
 
-    // 繪製最近三鏢（或本回合）落點，並區分順序 1, 2, 3 與 Bust 失效標記
     const markersToDraw = game.currentTurnThrows.length > 0
       ? game.currentTurnThrows
       : game.allThrows.slice(-3);
@@ -2132,7 +2212,7 @@
   }
 
   /**************************************************************
-   * 12. 自動存檔與對局恢復 (第十三章 13.2、13.3)
+   * 12. 自動存檔與對局恢復
    **************************************************************/
   function saveAllState() {
     saveStorage(STORAGE_KEYS.SETTINGS, settings);
@@ -2157,7 +2237,7 @@
   }
 
   /**************************************************************
-   * 13. 統計視窗與結算畫面 (第十章)
+   * 13. 統計視窗與結算畫面
    **************************************************************/
   function renderStatsModal() {
     const box = document.getElementById("stats-content");
@@ -2219,9 +2299,10 @@
     const bestDartInMatch = validThrows.reduce((m, t) => Math.max(m, t.score), 0);
     const bustCountInMatch = game.allThrows.filter(t => t.status === "BUST").length;
     const lastThrow = game.allThrows[game.allThrows.length - 1];
+    const profile = getActiveDiffProfile();
 
     body.innerHTML = `
-      <p><strong>模式：</strong>${game.mode === "501" ? "501 標準對局" : `結標挑戰 (${game.challengeTarget}分)`}</p>
+      <p><strong>模式：</strong>${game.mode === "501" ? "501 標準對局" : `結標挑戰 (${game.challengeTarget}分)`} (${profile.name})</p>
       <p><strong>完成時間：</strong>${formatTime(game.elapsedMs)}</p>
       <p><strong>總回合數 / 總用鏢數：</strong>${game.roundNumber} 回合（共 ${game.allThrows.length} 鏢）</p>
       <p><strong>最後結標鏢：</strong>${lastThrow ? lastThrow.hit.label : "-"}（結標回合起始：${game.roundStartScore} 分）</p>
@@ -2236,7 +2317,18 @@
    * 14. 事件綁定與初始化流程
    **************************************************************/
   function initEvents() {
-    // 戰術提示開關
+    // 頂部難度快速循環切換按鈕
+    document.getElementById("btn-quick-diff").addEventListener("click", () => {
+      const order = ["CASUAL", "STANDARD", "PRO"];
+      const nextIdx = (order.indexOf(settings.difficulty) + 1) % order.length;
+      settings.difficulty = order[nextIdx];
+      swipeState.active = false;
+      previewLayer.innerHTML = "";
+      saveAllState();
+      renderAll();
+      showToast(`已切換至「${getActiveDiffProfile().name}」檔位`);
+    });
+
     const chkHints = document.getElementById("toggle-hints");
     chkHints.addEventListener("change", () => {
       settings.showHints = chkHints.checked;
@@ -2244,18 +2336,15 @@
       renderAll();
     });
 
-    // 下一回合按鈕 (Bust 後)
     document.getElementById("btn-next-round").addEventListener("click", () => {
       advanceToNextRound();
       saveAllState();
       renderAll();
     });
 
-    // Undo 按鈕
     document.getElementById("btn-undo").addEventListener("click", performUndo);
     document.getElementById("btn-summary-undo").addEventListener("click", performUndo);
 
-    // 切換操作模式 (4.3：切換時若有未提交手勢，取消手勢且不消耗飛鏢)
     document.getElementById("btn-switch-ctrl").addEventListener("click", () => {
       swipeState.active = false;
       previewLayer.innerHTML = "";
@@ -2265,7 +2354,6 @@
       showToast(`已切換為 ${settings.controlMode === "CROSSHAIR" ? "Crosshair 準星點擊" : "Swipe 向上滑動投擲"}`);
     });
 
-    // 重新開始確認 (15.1：重新開始需確認)
     document.getElementById("btn-restart").addEventListener("click", () => {
       if (!confirm("確定要重新開始目前對局嗎？當前未完成的進度將會重設。")) return;
       if (game.mode === "CHALLENGE") {
@@ -2280,7 +2368,6 @@
       showToast("已重新開始新局");
     });
 
-    // 暫停按鈕 (13.4)
     document.getElementById("btn-pause").addEventListener("click", () => {
       if (!game) return;
       if (game.state === "PAUSED") {
@@ -2297,7 +2384,6 @@
       renderAll();
     });
 
-    // 主選單開關
     const modalMenu = document.getElementById("modal-menu");
     document.getElementById("btn-menu").addEventListener("click", () => {
       document.getElementById("btn-resume-saved").style.display = hasResumableGame() ? "inline-flex" : "none";
@@ -2339,7 +2425,6 @@
       renderAll();
     });
 
-    // 統計視窗
     const modalStats = document.getElementById("modal-stats");
     document.getElementById("btn-open-stats").addEventListener("click", () => {
       modalMenu.classList.remove("active");
@@ -2349,7 +2434,6 @@
     document.getElementById("btn-close-stats").addEventListener("click", () => modalStats.classList.remove("active"));
     document.getElementById("btn-close-stats-bottom").addEventListener("click", () => modalStats.classList.remove("active"));
 
-    // 重設個人紀錄 (14.4：再次確認且不默默刪除進行中的對局)
     document.getElementById("btn-reset-records").addEventListener("click", () => {
       if (!confirm("確定要重設所有個人統計與最佳紀錄嗎？（目前進行中的對局不會被刪除）")) return;
       stats501 = defaultStats501();
@@ -2360,9 +2444,9 @@
       showToast("已重設個人統計與最佳紀錄");
     });
 
-    // 設定視窗
     const modalSettings = document.getElementById("modal-settings");
     function openSettingsModal() {
+      document.getElementById("sel-difficulty").value = settings.difficulty || "STANDARD";
       document.getElementById("sel-ctrl-mode").value = settings.controlMode;
       document.getElementById("rng-power").value = settings.powerSens;
       document.getElementById("val-power").textContent = settings.powerSens.toFixed(2);
@@ -2399,12 +2483,13 @@
       openSettingsModal();
       saveAllState();
       renderAll();
-      showToast("已恢復預設操作與音效設定");
+      showToast("已恢復預設難度、操作與音效設定");
     });
 
     document.getElementById("btn-save-settings").addEventListener("click", () => {
       swipeState.active = false;
       previewLayer.innerHTML = "";
+      settings.difficulty = document.getElementById("sel-difficulty").value;
       settings.controlMode = document.getElementById("sel-ctrl-mode").value;
       settings.powerSens = parseFloat(document.getElementById("rng-power").value);
       settings.xSens = parseFloat(document.getElementById("rng-x-sens").value);
@@ -2419,7 +2504,6 @@
       showToast("設定已儲存");
     });
 
-    // 結算視窗按鈕
     document.getElementById("btn-summary-again").addEventListener("click", () => {
       document.getElementById("modal-summary").classList.remove("active");
       if (game && game.mode === "CHALLENGE") {
@@ -2435,7 +2519,6 @@
       modalMenu.classList.add("active");
     });
 
-    // 背景分頁恢復時校正計時基準 (13.4)
     document.addEventListener("visibilitychange", () => {
       if (game) {
         game.lastTickTs = performance.now();
@@ -2446,6 +2529,9 @@
   function bootstrap() {
     checkStorage();
     settings = loadStorage(STORAGE_KEYS.SETTINGS, defaultSettings);
+    if (!DIFFICULTY_PROFILES[settings.difficulty]) {
+      settings.difficulty = "STANDARD";
+    }
     stats501 = loadStorage(STORAGE_KEYS.STATS_501, defaultStats501);
     statsPractice = loadStorage(STORAGE_KEYS.STATS_PRACTICE, defaultStatsPractice);
     statsChallenge = loadStorage(STORAGE_KEYS.STATS_CHALLENGE, defaultStatsChallenge);
@@ -2456,7 +2542,6 @@
     setupBoardInputEvents();
     initEvents();
 
-    // 檢查是否有可恢復的對局 (13.3)
     const savedGame = loadStorage(STORAGE_KEYS.ACTIVE_GAME, () => null);
     if (savedGame && savedGame.matchId) {
       game = savedGame;
