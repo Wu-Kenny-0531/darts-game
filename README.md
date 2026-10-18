@@ -8,7 +8,7 @@
 
 一款主打**「爽感娛樂、真實規則與戰術導引」**的瀏覽器飛鏢遊戲。全專案封裝於單一 `index.html` 檔案中，透過原生 SVG、Canvas、Web Audio API 與 Web Speech API 打造，**零外部圖檔、零外部音檔、不依賴任何 CDN 或後端伺服器**，支援離線遊玩與一鍵 GitHub Pages 部署。
 
-🔗 **線上試玩 (Live Demo)**：`https://<你的GitHub帳號>.github.io/<你的專案名稱>/`
+🔗 **線上試玩 (Live Demo)**：`https://wu-kenny-0531.github.io/darts-game/`
 
 ---
 
