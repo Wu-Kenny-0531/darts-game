@@ -1,227 +1,2484 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>501 飛鏢遊戲</title>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>《501飛鏢遊戲》v1.2</title>
 <style>
-:root{--bg:#0a0c10;--pn:#141922;--ln:#263042;--tx:#eef1f6;--mu:#8b95a8;--gd:#ffcf4a;--rd:#e23b3b;--gr:#1fa35b}
-*{box-sizing:border-box}[hidden]{display:none!important}
-html,body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
-body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-header{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--ln)}
-h1{font-size:18px;margin:0;color:var(--gd);letter-spacing:.05em}
-#time{font-variant-numeric:tabular-nums;font-size:20px}
-#app{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;padding:12px;max-width:1120px;margin:auto;align-items:start}
-@media(max-width:840px){#app{grid-template-columns:1fr}}
-#bw{position:relative;width:min(100%,76vh);margin:auto}
-#bd{width:100%;height:auto;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
-.cross #bd{cursor:none}
-.card{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:12px;margin-bottom:12px}
-#rem{font-size:64px;font-weight:700;line-height:1;color:var(--gd);font-variant-numeric:tabular-nums}
-.mu{color:var(--mu);font-size:13px}
-.chip{display:inline-block;background:#0d1118;border:1px solid var(--ln);border-radius:8px;padding:4px 10px;margin:6px 6px 0 0}
-.chip small{color:var(--gd);margin-left:6px}.chip.bd{border-color:var(--rd);color:var(--rd)}
-#msg{min-height:22px;margin-top:8px;font-weight:600}
-#route{font-size:15px;line-height:1.5}
-label.sw{font-size:13px;color:var(--mu);display:block;margin-top:6px}
-#hist{list-style:none;margin:0;padding:0;max-height:150px;overflow:auto;font-size:14px}
-#hist li{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--ln)}
-.bt{color:var(--rd)}
-.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-button{font:inherit;color:var(--tx);background:#1c2433;border:1px solid #334158;border-radius:8px;padding:10px 12px;cursor:pointer;min-height:44px}
-button:hover{background:#26324a;border-color:var(--gd)}button:active{transform:scale(.97);background:#0f1522}
-button:disabled{opacity:.35;cursor:not-allowed;border-color:#334158;background:#1c2433;transform:none}
-button.pri{background:var(--gd);color:#1a1300;border-color:var(--gd);font-weight:700}
-button:focus-visible,input:focus-visible{outline:2px solid var(--gd);outline-offset:2px}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:20;padding:14px;overflow:auto}
-.ov .card{width:min(420px,100%);margin:auto}
-.ov h2{margin:0 0 10px;color:var(--gd)}.ov button{width:100%;margin-top:8px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}.grid4 button{margin:0;padding:8px 0}
-table{width:100%;border-collapse:collapse;font-size:14px}td{padding:5px 0;border-bottom:1px solid var(--ln)}td:last-child{text-align:right;color:var(--gd)}
-.hl{fill:rgba(255,207,74,.35);stroke:var(--gd);stroke-width:3;animation:gl 1.1s ease-in-out infinite alternate;pointer-events:none}
-@keyframes gl{from{opacity:.3}to{opacity:1}}
-.br{animation:br 1.4s ease-in-out infinite;transform-origin:0 0}@keyframes br{50%{transform:scale(1.3)}}
-.dim{opacity:.4}
-.shake{animation:sk .3s}@keyframes sk{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(3px,3px)}}
-.pop{position:absolute;transform:translate(-50%,-50%);color:var(--gd);font-weight:800;font-size:22px;text-shadow:0 2px 6px #000;pointer-events:none;animation:pp .9s forwards}
-@keyframes pp{to{top:calc(var(--y) - 50px);opacity:0}}
-#b180{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font-size:min(34vw,220px);font-weight:900;color:var(--gd);text-shadow:0 0 40px #ff9d00;pointer-events:none;z-index:30;animation:pp2 1.5s forwards}
-@keyframes pp2{0%{transform:scale(.3);opacity:0}25%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:0}}
-#fx{position:fixed;inset:0;pointer-events:none;z-index:25}
-#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#000c;border:1px solid var(--gd);padding:8px 16px;border-radius:20px;z-index:40;font-size:14px}
-#warn{color:var(--rd);font-size:12px}
-.na *{animation:none!important}
-</style></head><body>
-<header><h1>501 飛鏢遊戲</h1><span id="mode" class="mu"></span><span id="time">00:00</span></header>
-<div id="app" hidden>
- <div id="bw">
-  <svg id="bd" viewBox="0 0 500 500"><g id="brd"></g><g id="hint"></g><g id="dm"></g><g id="tj"></g>
-   <g id="cx" style="display:none"><g class="br"><circle r="14" fill="none" stroke="#ffcf4a" stroke-width="2"/><path d="M-26,0H-8M8,0H26M0,-26V-8M0,8V26" stroke="#ffcf4a" stroke-width="2"/></g></g></svg>
- </div>
- <div>
-  <div class="card"><div class="mu" id="remL">剩餘分數</div><div id="rem">501</div><div class="mu" id="sub"></div><div id="chips"></div><div id="msg"></div></div>
-  <div class="card"><div class="mu">結標路線</div><div id="route"></div><label class="sw"><input type="checkbox" id="hintT"> 顯示結標提示</label></div>
-  <div class="card"><div class="mu">投擲歷史</div><ul id="hist"></ul></div>
-  <div class="card"><div class="btns">
-   <button id="undo">↶ 撤銷上一鏢</button><button id="next" class="pri">下一回合</button>
-   <button id="ctl"></button><button id="rst">重新開始</button>
-   <button id="snd"></button><button id="anim"></button>
-   <button id="stat">統計</button><button id="menuB">主選單</button></div>
-   <label class="sw">Swipe 靈敏度 <input type="range" id="sens" min=".5" max="1.5" step=".1"></label><div id="warn"></div></div>
- </div>
+  :root {
+    --bg-dark: #0f1218;
+    --bg-panel: #181d26;
+    --bg-card: #222936;
+    --gold: #f5c542;
+    --gold-glow: rgba(245, 197, 66, 0.65);
+    --red: #e63946;
+    --green: #2a9d8f;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --danger: #ef4444;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* 頂部資訊列 */
+  header {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--gold);
+  }
+
+  .mode-badge {
+    background: var(--bg-card);
+    color: var(--text-main);
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .timer-box {
+    font-family: monospace;
+    font-size: 1.1rem;
+    background: var(--bg-card);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--gold);
+  }
+
+  /* 按鈕規範：正常、懸停、按下、停用 */
+  button {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  button:hover:not(:disabled) {
+    border-color: var(--gold);
+    background: #2b3445;
+  }
+
+  button:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  button.primary {
+    background: var(--gold);
+    color: #000;
+    border-color: var(--gold);
+  }
+
+  button.primary:hover:not(:disabled) {
+    background: #ffd15c;
+  }
+
+  button.danger {
+    border-color: var(--danger);
+    color: #fca5a5;
+  }
+
+  button.danger:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.2);
+  }
+
+  /* 主要版面配置 */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 16px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    main {
+      grid-template-columns: 1fr;
+      padding: 10px;
+      gap: 12px;
+    }
+  }
+
+  /* 靶面區 */
+  .board-section {
+    position: relative;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .board-container {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: 1 / 1;
+    touch-action: none;
+  }
+
+  svg#dartboard {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  canvas#fx-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* 霓虹結標提示 */
+  @keyframes neonPulse {
+    0%, 100% {
+      stroke: var(--gold);
+      stroke-width: 3.5px;
+      filter: drop-shadow(0 0 6px var(--gold)) drop-shadow(0 0 12px var(--gold));
+    }
+    50% {
+      stroke: #fff;
+      stroke-width: 4.5px;
+      filter: drop-shadow(0 0 12px var(--gold)) drop-shadow(0 0 20px var(--gold));
+    }
+  }
+
+  .neon-target {
+    animation: neonPulse 1.2s infinite ease-in-out;
+    pointer-events: auto;
+  }
+
+  .no-anim .neon-target {
+    animation: none !important;
+    stroke: var(--gold) !important;
+    stroke-width: 3.5px !important;
+  }
+
+  /* 螢幕震動 */
+  @keyframes screenShake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-6px, 5px); }
+    40% { transform: translate(6px, -5px); }
+    60% { transform: translate(-4px, -4px); }
+    80% { transform: translate(4px, 4px); }
+  }
+
+  .shake {
+    animation: screenShake 0.32s ease;
+  }
+
+  /* 浮動文字特效 */
+  .floating-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 15;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 0 18px var(--gold);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.35s;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .floating-banner.show {
+    opacity: 1;
+    transform: translate(-50%, -60%) scale(1.08);
+  }
+
+  /* 右側資訊與操作欄 */
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .card-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* 分數區 */
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .score-box {
+    background: var(--bg-card);
+    padding: 10px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .score-main {
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1.1;
+  }
+
+  .score-sub {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .score-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* 戰術區 */
+  .tactical-route {
+    background: rgba(245, 197, 66, 0.1);
+    border: 1px solid rgba(245, 197, 66, 0.4);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 6px;
+  }
+
+  .route-primary {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .route-alt {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* 本回合三鏢與歷史區 */
+  .turn-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .dart-slot {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    min-height: 54px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .dart-slot.active {
+    border-color: var(--gold);
+  }
+
+  .dart-slot-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .dart-slot-val {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .history-list {
+    max-height: 130px;
+    overflow-y: auto;
+    font-size: 0.82rem;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.07);
+  }
+
+  .badge-bust {
+    color: var(--danger);
+    font-weight: 700;
+  }
+
+  .badge-win {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* 操作區 */
+  .controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  /* 彈出視窗與主選單 */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 10, 15, 0.85);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    max-width: 540px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .menu-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    gap: 12px;
+  }
+
+  .form-row label {
+    font-size: 0.9rem;
+  }
+
+  select, input[type="range"] {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  .stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-top: 8px;
+  }
+
+  .stats-table th, .stats-table td {
+    border: 1px solid var(--border);
+    padding: 8px;
+    text-align: left;
+  }
+
+  .stats-table th {
+    background: var(--bg-card);
+    color: var(--gold);
+  }
+
+  .storage-warning {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid var(--danger);
+    color: #fca5a5;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    text-align: center;
+    display: none;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    border: 1px solid var(--gold);
+    color: var(--text-main);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .toast.show {
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div id="storage-warning" class="storage-warning">目前無法保存紀錄（localStorage 受限，僅保留當次記憶體狀態）</div>
+
+<header>
+  <div class="brand">
+    <span>🎯 501飛鏢 v1.2</span>
+    <span id="header-mode" class="mode-badge">501 標準</span>
+  </div>
+  <div class="header-right">
+    <div id="timer-display" class="timer-box">00:00.0</div>
+    <button id="btn-pause" title="暫停">⏸ 暫停</button>
+    <button id="btn-menu">☰ 主選單</button>
+  </div>
+</header>
+
+<main id="app-main">
+  <!-- 靶面區 -->
+  <section class="board-section" id="board-wrapper">
+    <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:0.82rem; color:var(--text-muted);">
+      <span id="status-banner">狀態：PLAYING（請投擲）</span>
+      <span id="control-indicator">模式 A：準星點擊</span>
+    </div>
+
+    <div class="board-container" id="board-container">
+      <svg id="dartboard" viewBox="-260 -260 520 520" aria-label="飛鏢靶面"></svg>
+      <canvas id="fx-canvas" width="520" height="520"></canvas>
+      <div id="floating-banner" class="floating-banner">180!</div>
+    </div>
+
+    <div id="submode-bar" style="width:100%; margin-top:10px; display:none; gap:8px; flex-wrap:wrap; justify-content:center;"></div>
+  </section>
+
+  <!-- 右側資訊區 -->
+  <aside class="side-panel">
+    <!-- 分數區 -->
+    <div class="card">
+      <div class="card-title">
+        <span id="score-title-label">剩餘分數 (501 Double Out)</span>
+        <span id="round-counter">第 1 回合</span>
+      </div>
+      <div class="score-grid">
+        <div class="score-box">
+          <div id="rem-score" class="score-main">501</div>
+          <div class="score-label" id="rem-score-label">剩餘分數</div>
+        </div>
+        <div class="score-box">
+          <div id="turn-score" class="score-sub">0</div>
+          <div class="score-label">本回合得分</div>
+        </div>
+        <div class="score-box">
+          <div id="darts-used" class="score-sub">0 / 3</div>
+          <div class="score-label">已投鏢數</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 戰術區 -->
+    <div class="card">
+      <div class="card-title">
+        <span>智能結標路線與霓虹提示</span>
+        <label style="font-size:0.78rem; cursor:pointer; display:flex; align-items:center; gap:4px;">
+          <input type="checkbox" id="toggle-hints" checked> 顯示提示
+        </label>
+      </div>
+      <div id="tactical-box" class="tactical-route">
+        <div id="route-primary" class="route-primary">距離結標區尚遠（≤170 開啟結標導引）</div>
+        <div id="route-alt" class="route-alt">建議瞄準 T20 推進分數</div>
+      </div>
+    </div>
+
+    <!-- 本回合三鏢與歷史區 -->
+    <div class="card">
+      <div class="card-title">
+        <span>本回合投擲 & 歷史紀錄</span>
+        <span id="turn-start-info" style="font-size:0.75rem;">回合起始：501</span>
+      </div>
+      <div class="turn-slots">
+        <div class="dart-slot active" id="slot-0">
+          <span class="dart-slot-label">第一鏢</span>
+          <span class="dart-slot-val">-</span>
+        </div>
+        <div class="dart-slot" id="slot-1">
+          <span class="dart-slot-label">第二鏢</span>
+          <span class="dart-slot-val">-</span>
+        </div>
+        <div class="dart-slot" id="slot-2">
+          <span class="dart-slot-label">第三鏢</span>
+          <span class="dart-slot-val">-</span>
+        </div>
+      </div>
+      <div id="next-round-bar" style="display:none; margin-bottom:8px;">
+        <button id="btn-next-round" class="primary" style="width:100%;">▶ 開始下一回合</button>
+      </div>
+      <div class="history-list" id="history-list"></div>
+    </div>
+
+    <!-- 操作區 -->
+    <div class="card">
+      <div class="card-title"><span>操作控制</span></div>
+      <div class="controls-grid">
+        <button id="btn-undo" disabled>↩ Undo 撤銷</button>
+        <button id="btn-switch-ctrl">🎯 切換為滑動投擲</button>
+        <button id="btn-restart" class="danger">🔄 重新開始</button>
+        <button id="btn-settings">⚙️ 操作與音效設定</button>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- 主選單 Modal -->
+<div class="modal-overlay" id="modal-menu">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">🎯 《501飛鏢遊戲》主選單</div>
+      <button id="btn-close-menu">✕</button>
+    </div>
+    <div class="menu-grid">
+      <button id="btn-resume-saved" class="primary" style="display:none;">▶ 繼續未完成對局</button>
+      <button id="btn-start-501" class="primary">🔥 開始 501 標準對局 (Double Out)</button>
+      <button id="btn-start-practice">🎯 練習模式 (單倍/雙倍/三倍/牛眼/自由)</button>
+      <button id="btn-start-challenge">⚡ 結標挑戰 (40 ~ 170 指定分數)</button>
+      <button id="btn-open-stats">📊 個人統計與最佳紀錄</button>
+      <button id="btn-open-settings-menu">⚙️ 操作模式、校準與音效設定</button>
+    </div>
+  </div>
 </div>
-<div id="menu" class="ov"><div class="card"><h2>501 飛鏢遊戲</h2>
- <button id="mCont" class="pri" hidden></button><button id="mStd" class="pri">開始 501 標準對局</button><button id="mPrac">練習模式</button>
- <div class="mu" style="margin-top:12px">結標挑戰（選擇起始分數，三鏢內 Double Out）</div><div id="chs" class="grid4"></div>
- <button id="mStat">個人統計與最佳紀錄</button></div></div>
-<div id="res" class="ov" hidden><div class="card"><h2 id="resT"></h2><table id="resB"></table>
- <button id="rAgain" class="pri">再玩一局</button><button id="rUndo">撤銷最後一鏢</button><button id="rMenu">返回主選單</button></div></div>
-<div id="sts" class="ov" hidden><div class="card"><h2>個人統計（501 標準）</h2><table id="stB"></table>
- <button id="stReset">重設個人紀錄</button><button id="stClose" class="pri">關閉</button></div></div>
-<canvas id="fx"></canvas>
+
+<!-- 設定與校準 Modal -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ 操作校準、音效與顯示設定</div>
+      <button id="btn-close-settings">✕</button>
+    </div>
+    <div class="form-row">
+      <label for="sel-ctrl-mode">操作模式</label>
+      <select id="sel-ctrl-mode">
+        <option value="CROSSHAIR">模式 A：Crosshair Breathing (準星點擊)</option>
+        <option value="SWIPE">模式 B：Swipe Throw (向上滑動投擲)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="rng-power">投擲力度靈敏度 (<span id="val-power">1.0</span>)</label>
+      <input type="range" id="rng-power" min="0.5" max="1.8" step="0.05" value="1.0">
+    </div>
+    <div class="form-row">
+      <label for="rng-x-sens">左右偏移靈敏度 (<span id="val-x-sens">1.0</span>)</label>
+      <input type="range" id="rng-x-sens" min="0.5" max="1.8" step="0.05" value="1.0">
+    </div>
+    <div class="form-row">
+      <label for="chk-breathing">準星呼吸擺動視覺效果</label>
+      <input type="checkbox" id="chk-breathing" checked>
+    </div>
+    <div class="form-row">
+      <label for="chk-trajectory">Swipe 黃金虛線軌跡預覽</label>
+      <input type="checkbox" id="chk-trajectory" checked>
+    </div>
+    <div class="form-row">
+      <label for="chk-sound">合成音效開關 (Web Audio)</label>
+      <input type="checkbox" id="chk-sound" checked>
+    </div>
+    <div class="form-row">
+      <label for="rng-volume">音效音量 (<span id="val-vol">80%</span>)</label>
+      <input type="range" id="rng-volume" min="0" max="1" step="0.05" value="0.8">
+    </div>
+    <div class="form-row">
+      <label for="sel-anim">動畫與特效等級</label>
+      <select id="sel-anim">
+        <option value="FULL">完整 (粒子 + 震動 + 霓虹)</option>
+        <option value="SIMPLE">簡化 (無震動、少量粒子)</option>
+        <option value="OFF">關閉 (僅保留文字與靜態框線)</option>
+      </select>
+    </div>
+    <div style="margin-top:14px; display:flex; justify-content:space-between; gap:10px;">
+      <button id="btn-reset-defaults">恢復預設設定</button>
+      <button id="btn-save-settings" class="primary">確認儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 統計與最佳紀錄 Modal -->
+<div class="modal-overlay" id="modal-stats">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">📊 進階統計與個人最佳紀錄</div>
+      <button id="btn-close-stats">✕</button>
+    </div>
+    <div id="stats-content"></div>
+    <div style="margin-top:16px; display:flex; justify-content:space-between; gap:10px;">
+      <button id="btn-reset-records" class="danger">🗑 重設個人紀錄</button>
+      <button id="btn-close-stats-bottom" class="primary">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- 結算畫面 Modal -->
+<div class="modal-overlay" id="modal-summary">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title" id="summary-title">🏆 對局結算</div>
+    </div>
+    <div id="summary-body" style="line-height:1.7; font-size:0.95rem;"></div>
+    <div style="margin-top:16px; display:flex; gap:10px;">
+      <button id="btn-summary-undo">↩ Undo 撤銷最後一鏢</button>
+      <button id="btn-summary-again" class="primary" style="flex:1;">🔄 再玩一局</button>
+      <button id="btn-summary-menu">☰ 主選單</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">提示訊息</div>
+
 <script>
-"use strict";
-const $=id=>document.getElementById(id),N=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5],C=250,K=1.25;
-const RB={ib:6.35*K,ob:15.9*K,t1:99*K,t2:107*K,d1:162*K,d2:170*K};
-const fresh=()=>({games:0,fastest:null,bestDart:0,bestRound:0,c180:0,coMax:0,bust:0,pts:0,darts:0,coTry:0,coOk:0,ch:{}});
-function load(k,d){try{return Object.assign(d,JSON.parse(localStorage.getItem(k))||{})}catch(e){return d}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));$('warn').textContent=''}catch(e){$('warn').textContent='目前無法保存紀錄'}}
-let R=load('d501_rec',fresh()),ST=load('d501_set',{ctl:'cross',snd:1,anim:matchMedia('(prefers-reduced-motion: reduce)').matches?0:1,hint:1,sens:1});
-let S=null,STK=[],busy=0,g=null;const T={acc:0,t0:null};
-const el=()=>T.acc+(T.t0?Date.now()-T.t0:0);
-const fmt=ms=>{const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
-/* ===== 靶面 ===== */
-const pt=(r,a)=>(C+r*Math.sin(a*Math.PI/180)).toFixed(1)+','+(C-r*Math.cos(a*Math.PI/180)).toFixed(1);
-const wedge=(r1,r2,a1,a2)=>`M${pt(r2,a1)}A${r2},${r2} 0 0 1 ${pt(r2,a2)}L${pt(r1,a2)}A${r1},${r1} 0 0 0 ${pt(r1,a1)}Z`;
-(function(){let h=`<circle cx="${C}" cy="${C}" r="246" fill="#05070a" stroke="#ffcf4a" stroke-opacity=".5" stroke-width="2"/>`;
- N.forEach((n,i)=>{const a1=i*18-9,a2=a1+18,s=i%2?'#efe3c2':'#15171c',c=i%2?'#1fa35b':'#e23b3b';
-  h+=`<path d="${wedge(RB.ob,RB.t1,a1,a2)}" fill="${s}"/><path d="${wedge(RB.t2,RB.d1,a1,a2)}" fill="${s}"/><path d="${wedge(RB.t1,RB.t2,a1,a2)}" fill="${c}"/><path d="${wedge(RB.d1,RB.d2,a1,a2)}" fill="${c}"/>`;
-  const[x,y]=pt(231,i*18).split(',');h+=`<text x="${x}" y="${(+y+5).toFixed(1)}" text-anchor="middle" fill="#eef1f6" font-size="16" font-weight="700">${n}</text>`});
- h+=`<circle cx="${C}" cy="${C}" r="${RB.ob}" fill="#1fa35b"/><circle cx="${C}" cy="${C}" r="${RB.ib}" fill="#e23b3b"/>`;$('brd').innerHTML=h})();
-function judge(x,y){const dx=x-C,dy=y-C,r=Math.hypot(dx,dy);
- if(!isFinite(r)||r>RB.d2)return{s:0,m:0,n:0,l:'MISS'};
- if(r<=RB.ib)return{s:50,m:2,n:25,l:'50'};if(r<=RB.ob)return{s:25,m:1,n:25,l:'25'};
- const a=(Math.atan2(dx,-dy)*180/Math.PI+369)%360,n=N[Math.floor(a/18)%20];let m=1;
- if(r>=RB.t1&&r<=RB.t2)m=3;else if(r>=RB.d1)m=2;return{s:n*m,m,n,l:(m==3?'T':m==2?'D':'S')+n}}
-function shape(o){if(o.n==25)return`<circle class="hl" cx="${C}" cy="${C}" r="${o.m==2?RB.ib:RB.ob}"/>`;
- const i=N.indexOf(o.n),a=i*18-9,[r1,r2]=o.m==3?[RB.t1,RB.t2]:o.m==2?[RB.d1,RB.d2]:[RB.t2,RB.d1];return`<path class="hl" d="${wedge(r1,r2,a,a+18)}"/>`}
-/* ===== 結標引擎 ===== */
-const ALL=[];for(let n=1;n<=20;n++)for(const m of[1,2,3])ALL.push({l:(m==3?'T':m==2?'D':'S')+n,s:n*m,m,n});
-ALL.push({l:'25',s:25,m:1,n:25},{l:'50',s:50,m:2,n:25});
-ALL.sort((a,b)=>b.s-a.s||b.m-a.m);const DBL=ALL.filter(o=>o.m==2);
-function f(rem,d){if(d==1){const o=DBL.find(o=>o.s==rem);return o?[o]:null}
- for(const o of ALL){if(o.s>rem-2)continue;const p=f(rem-o.s,d-1);if(p)return[o,...p]}return null}
-function route(rem,k){if(rem<2||rem>170||k<1)return null;for(let d=1;d<=k;d++){const p=f(rem,d);if(p)return p}return null}
-/* ===== 遊戲流程 ===== */
-function newGame(mode,start){const st=start||501;S={mode,rem:mode=='prac'?0:st,ts:st,start:st,darts:[],turn:1,hist:[],wait:0,over:0,res:'',nr:[],tot:0,co:0};
- STK=[];T.acc=0;T.t0=Date.now();$('menu').hidden=1;$('res').hidden=1;$('app').hidden=0;draw();persist()}
-function persist(){save('d501_rec',R);save('d501_set',ST);if(S)save('d501_save',{v:1,S,STK,acc:el()})}
-function doThrow(x,y){if(!S||S.over||S.wait||busy||!$('menu').hidden)return;busy=1;setTimeout(()=>busy=0,250);
- STK.push(JSON.stringify({S,R}));const h=judge(x,y),d={l:h.l,s:h.s,x,y,m:h.m};S.darts.push(d);let ev='';
- if(S.mode=='prac'){S.tot+=h.s;if(S.darts.length==3){S.hist.push({d:S.darts,b:0,sum:S.darts.reduce((a,q)=>a+q.s,0)});S.darts=[];S.turn++}}
- else{const before=S.rem,c=before-h.s;
-  if(S.mode=='std'&&((before<=40&&before>=2&&before%2==0)||before==50))R.coTry++;
-  const bust=c<0||c==1||(c==0&&h.m!=2),win=c==0&&!bust,end3=S.darts.length==3;
-  if(bust){d.b=1;S.rem=S.ts;ev='bust'}else S.rem=c;
-  if(win){S.over=1;S.res='win';S.co=before;T.acc=el();T.t0=null;ev='win'}
-  else if(S.mode=='ch'&&(bust||end3)){S.over=1;S.res='lose';T.acc=el();T.t0=null}
-  if(bust||win||end3)endTurn(bust,win,before);
-  if(!bust&&!win&&end3&&S.hist[S.hist.length-1].sum==180&&S.mode=='std')ev='180'}
- draw();persist();try{fx(h,x,y,ev)}catch(e){}}
-function endTurn(b,win,before){const sum=S.darts.reduce((a,d)=>a+d.s,0);S.hist.push({d:S.darts,b,sum});
- if(S.mode=='std'){if(b)R.bust++;else{R.pts+=sum;R.darts+=S.darts.length;const bd=Math.max(...S.darts.map(d=>d.s));
-  if(bd>R.bestDart){R.bestDart=bd;S.nr.push('最高單鏢 '+bd)}if(sum>R.bestRound){R.bestRound=sum;S.nr.push('最高回合 '+sum)}
-  if(sum==180){R.c180++;S.nr.push('180 次數 '+R.c180)}}
-  if(win){R.games++;R.coOk++;const t=el();if(R.fastest==null||t<R.fastest){R.fastest=t;S.nr.push('最快勝利 '+fmt(t))}
-   if(before>R.coMax){R.coMax=before;S.nr.push('最高結標 '+before)}}}
- if(S.mode=='ch'&&S.over){const c=R.ch[S.start]||(R.ch[S.start]={w:0,f:0,best:null,time:null});
-  if(win){c.w++;const n=S.darts.length,t=el();if(!c.best||n<c.best)c.best=n;if(!c.time||t<c.time)c.time=t}else c.f++}
- if(!S.over)S.wait=1}
-function nextTurn(){if(!S||!S.wait||S.over)return;S.darts=[];S.turn++;S.ts=S.rem;S.wait=0;draw();persist()}
-function undo(){if(!S||busy||!STK.length)return;const o=JSON.parse(STK.pop());S=o.S;R=o.R;if(!T.t0)T.t0=Date.now();g=null;$('tj').innerHTML='';$('res').hidden=1;draw();persist();toast('已撤銷上一鏢')}
-/* ===== 畫面 ===== */
-function draw(){if(!S)return;const pr=S.mode=='prac',ch=S.mode=='ch',cur=S.darts,sum=cur.reduce((a,d)=>a+d.s,0);
- $('mode').textContent=pr?'練習模式':ch?'結標挑戰 '+S.start:'501 Double Out';
- $('remL').textContent=pr?'累計分數':'剩餘分數';$('rem').textContent=pr?S.tot:S.rem;
- $('sub').textContent=`第 ${S.turn} 回合｜本回合 ${sum} 分｜已投 ${cur.length}/3`;
- $('chips').innerHTML=cur.map(d=>`<span class="chip${d.b?' bd':''}">${d.l}<small>${d.s}</small></span>`).join('')||'<span class="mu">尚未投擲</span>';
- const lh=S.hist[S.hist.length-1];let m='';
- if(S.over)m=S.res=='win'?'合法結標，勝利！':'Bust 或鏢數用完，挑戰失敗';
- else if(S.wait)m=lh.b?`BUST！分數回復至 ${S.rem}，請開始下一回合`:`本回合結束（${lh.sum} 分），請開始下一回合`;
- $('msg').textContent=m;
- let hs='',tg=null;
- if(!pr&&!S.over&&!S.wait){const r=S.rem>170?null:route(S.rem,3-cur.length);
-  if(S.rem>170)hs='剩餘 '+S.rem+' 分｜建議：瞄準 T20 拿高分';else if(r){hs='剩餘 '+S.rem+' 分｜建議：'+r.map(o=>o.l).join(' → ');tg=r[0]}else hs='剩餘 '+S.rem+' 分｜目前無法直接結標，先拿分調整'}
- else if(pr)hs='練習模式不使用結標規則';
- $('route').textContent=ST.hint?hs:'（提示已關閉）';$('hint').innerHTML=ST.hint&&tg?shape(tg):'';
- $('dm').innerHTML=cur.map((d,i)=>`<g class="${d.b?'dim':''}"><circle cx="${d.x.toFixed(1)}" cy="${d.y.toFixed(1)}" r="7" fill="#ffcf4a" stroke="#000" stroke-width="1.5"/><text x="${d.x.toFixed(1)}" y="${(d.y+4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#000">${i+1}</text></g>`).join('');
- const hh=S.hist.slice(0,S.hist.length-((S.wait||S.over)&&S.mode!='prac'?1:0));
- $('hist').innerHTML=hh.slice().reverse().map(h=>`<li><span>${h.b?'<b class="bt">BUST</b> ':''}${h.d.map(d=>d.l).join(' · ')}</span><span>${h.sum}</span></li>`).join('')||'<li class="mu">尚無紀錄</li>';
- $('undo').disabled=!STK.length;$('next').hidden=!(S.wait&&!S.over);
- $('ctl').textContent='操作：'+(ST.ctl=='cross'?'準星點擊':'滑動投擲');$('snd').textContent='音效：'+(ST.snd?'開':'關');
- $('anim').textContent='動畫：'+(ST.anim?'開':'關');$('hintT').checked=!!ST.hint;$('sens').value=ST.sens;
- document.body.classList.toggle('na',!ST.anim);$('bw').classList.toggle('cross',ST.ctl=='cross');
- if(S.over&&!pr)showRes();else $('res').hidden=1}
-function showRes(){const v=S.hist.filter(h=>!h.b),pts=v.reduce((a,h)=>a+h.sum,0),dn=v.reduce((a,h)=>a+h.d.length,0),
- bd=Math.max(0,...v.flatMap(h=>h.d.map(d=>d.s))),br=Math.max(0,...v.map(h=>h.sum)),w=S.res=='win';let r;
- if(S.mode=='ch'){const c=R.ch[S.start]||{};r=[['起始分數',S.start],['結果',w?'成功':'失敗'],['用鏢數',S.darts.length],['結標路線',S.darts.map(d=>d.l).join(' → ')],['耗時',fmt(T.acc)],['個人最佳',c.best?c.best+' 鏢 / '+fmt(c.time):'-']]}
- else r=[['完成時間',fmt(T.acc)],['回合數',S.turn],['三鏢平均',dn?(pts/dn*3).toFixed(1):'0'],['最高單鏢',bd],['最高回合',br],['Bust 次數',S.hist.filter(h=>h.b).length],['結標',S.co+' 分 → '+S.darts[S.darts.length-1].l],['刷新紀錄',S.nr.length?S.nr.join('、'):'無']];
- $('resT').textContent=S.mode=='ch'?(w?'挑戰成功':'挑戰失敗'):'勝利！';$('resB').innerHTML=r.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');$('res').hidden=0}
-function statsView(){const a=R.darts?(R.pts/R.darts*3).toFixed(1):'-',rt=R.coTry?Math.round(R.coOk/R.coTry*100)+'%':'-';
- let h=[['完成對局數',R.games],['最快勝利',R.fastest==null?'-':fmt(R.fastest)],['最高單鏢',R.bestDart],['最高回合分數',R.bestRound],['三鏢平均',a],['180 次數',R.c180],['最高結標分數',R.coMax||'-'],['結標成功率',rt],['Bust 次數',R.bust]];
- Object.keys(R.ch).forEach(k=>{const c=R.ch[k];h.push(['挑戰 '+k,`${c.w} 勝 ${c.f} 敗｜${c.best?c.best+' 鏢 '+fmt(c.time):'-'}`])});
- $('stB').innerHTML=h.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');$('sts').hidden=0}
-function toast(t){const d=document.createElement('div');d.id='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1400)}
-/* ===== 回饋：音效、粒子、震動 ===== */
-let AC;function ac(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state=='suspended')AC.resume()}catch(e){AC=null}return AC}
-function tone(f0,d,ty,v,f1,t){if(!ST.snd)return;const a=ac();if(!a)return;try{const o=a.createOscillator(),gn=a.createGain(),s=a.currentTime+(t||0);o.type=ty;o.frequency.setValueAtTime(f0,s);if(f1)o.frequency.exponentialRampToValueAtTime(f1,s+d);gn.gain.setValueAtTime(v,s);gn.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(gn);gn.connect(a.destination);o.start(s);o.stop(s+d)}catch(e){}}
-const SND={hit(){tone(150,.12,'sine',.35,50);tone(2600,.05,'triangle',.08,1800)},miss(){tone(90,.18,'sine',.15,60)},
- big(){SND.hit();[880,1175,1568].forEach((q,i)=>tone(q,.25,'triangle',.15,0,i*.07))},bust(){tone(300,.5,'sawtooth',.15,70)},
- win(){[523,659,784,1047,1319].forEach((q,i)=>tone(q,.4,'triangle',.18,0,i*.12))},m180(){[392,523,659,784,1047,1319].forEach((q,i)=>tone(q,.3,'square',.1,0,i*.08))}};
-const cv=$('fx'),cc=cv.getContext('2d');let P=[],raf=0;
-function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener('resize',rs);
-function burst(x,y,n){if(!ST.anim)return;for(let i=0;i<n;i++)P.push({x,y,vx:(Math.random()-.5)*11,vy:(Math.random()-.85)*10,l:1});if(!raf)raf=requestAnimationFrame(lp)}
-function lp(){cc.clearRect(0,0,cv.width,cv.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.28;p.l-=.02;cc.globalAlpha=Math.max(p.l,0);cc.fillStyle='#ffcf4a';cc.beginPath();cc.arc(p.x,p.y,3,0,7);cc.fill()});
- P=P.filter(p=>p.l>0);raf=P.length?requestAnimationFrame(lp):0;if(!raf)cc.clearRect(0,0,cv.width,cv.height)}
-function fx(h,x,y,ev){const r=$('bd').getBoundingClientRect(),px=r.left+x/500*r.width,py=r.top+y/500*r.height;
- const p=document.createElement('div');p.className='pop';p.textContent=h.s?h.l+' +'+h.s:'MISS';p.style.left=x/5+'%';p.style.top=y/5+'%';p.style.setProperty('--y',y/5+'%');$('bw').appendChild(p);setTimeout(()=>p.remove(),950);
- const big=h.l=='T20'||h.l=='50';
- if(ev=='bust')SND.bust();else if(!h.s)SND.miss();else if(big||h.l=='25')SND.big();else SND.hit();
- if(big){burst(px,py,50);if(ST.anim){$('bw').classList.add('shake');setTimeout(()=>$('bw').classList.remove('shake'),320)}}
- if(ev=='win'){SND.win();burst(innerWidth/2,innerHeight/2,120)}
- if(ev=='180'){SND.m180();burst(innerWidth/2,innerHeight/2,120);const b=document.createElement('div');b.id='b180';b.textContent='180';document.body.appendChild(b);setTimeout(()=>b.remove(),1500)}
- if(ev=='bust')toast('BUST')}
-/* ===== 輸入 ===== */
-const pos=e=>{const r=$('bd').getBoundingClientRect();return[(e.clientX-r.left)/r.width*500,(e.clientY-r.top)/r.height*500]};
-function canT(){return S&&!S.over&&!S.wait&&$('menu').hidden}
-function mc(e){const[p,q]=pos(e);$('cx').setAttribute('transform',`translate(${p},${q})`);$('cx').style.display=''}
-function land(e){const r=$('bd').getBoundingClientRect(),dx=e.clientX-g.x0,dist=Math.max(0,g.y0-e.clientY),dt=Math.max(30,performance.now()-g.t0),sp=dist/dt*1000;
- const fc=.7+.3*Math.min(sp/650,2),p=Math.min(dist/(r.height*.45)*fc,1.8),cl=(v,a,b)=>Math.max(a,Math.min(b,v));
- return[C+cl(dx/r.width*500*ST.sens,-260,260),cl(C+(1-p)*260,-10,520)]}
-function cancelG(){g=null;$('tj').innerHTML='';if(ST.ctl!='cross')$('cx').style.display='none'}
-const bd=$('bd');
-bd.addEventListener('pointerdown',e=>{if(!canT())return;try{bd.setPointerCapture(e.pointerId)}catch(x){}ac();
- if(ST.ctl=='cross'){g={t:'c'};mc(e)}else g={t:'s',x0:e.clientX,y0:e.clientY,t0:performance.now(),p0:pos(e)}});
-bd.addEventListener('pointermove',e=>{if(ST.ctl=='cross'){if(canT())mc(e)}else if(g&&g.t=='s'){const[lx,ly]=land(e);
- $('tj').innerHTML=`<path d="M${g.p0[0]},${g.p0[1]}L${lx},${ly}" stroke="#ffcf4a" stroke-width="3" stroke-dasharray="8 7" fill="none"/><circle cx="${lx}" cy="${ly}" r="8" fill="none" stroke="#ffcf4a" stroke-width="2"/>`}});
-bd.addEventListener('pointerup',e=>{if(!g)return;const o=g;g=null;$('tj').innerHTML='';
- if(o.t=='c'){if(canT())doThrow(...pos(e))}else{if(Math.hypot(e.clientX-o.x0,e.clientY-o.y0)<14||o.y0-e.clientY<=0)return;g=o;const[lx,ly]=land(e);g=null;if(canT())doThrow(lx,ly)}});
-bd.addEventListener('pointercancel',cancelG);bd.addEventListener('pointerleave',e=>{if(e.pointerType=='mouse'&&!g)$('cx').style.display='none'});
-/* ===== 控制 ===== */
-function openMenu(){if(S&&!S.over&&T.t0){T.acc=el();T.t0=null}$('res').hidden=1;
- const b=$('mCont');let sv=null;try{sv=JSON.parse(localStorage.getItem('d501_save'))}catch(e){}
- if(S&&!S.over){b.hidden=0;b.textContent='返回對局'}else if(sv&&sv.v==1&&sv.S&&!sv.S.over){b.hidden=0;b.textContent='繼續未完成對局'}else b.hidden=1;$('menu').hidden=0}
-$('mCont').onclick=()=>{if(S&&!S.over){T.t0=Date.now();$('menu').hidden=1;draw();return}
- try{const o=JSON.parse(localStorage.getItem('d501_save'));if(!o||o.v!=1)throw 0;S=o.S;STK=o.STK||[];T.acc=o.acc||0;T.t0=Date.now();$('menu').hidden=1;$('app').hidden=0;draw()}catch(e){toast('存檔無法讀取，請開始新局');localStorage.removeItem('d501_save');$('mCont').hidden=1}};
-$('mStd').onclick=()=>newGame('std');$('mPrac').onclick=()=>newGame('prac');$('mStat').onclick=statsView;$('stat').onclick=()=>{if(S&&!S.over&&T.t0){T.acc=el();T.t0=null}statsView()};
-$('stClose').onclick=()=>{$('sts').hidden=1;if(S&&!S.over&&$('menu').hidden&&!T.t0)T.t0=Date.now()};
-$('stReset').onclick=()=>{if(confirm('確定重設所有個人紀錄？此動作無法復原（進行中的對局不會被刪除）。')){R=fresh();persist();statsView()}};
-[40,50,61,80,100,121,141,170].filter(v=>route(v,3)).forEach(v=>{const b=document.createElement('button');b.textContent=v;b.onclick=()=>newGame('ch',v);$('chs').appendChild(b)});
-$('undo').onclick=undo;$('rUndo').onclick=undo;$('next').onclick=nextTurn;
-$('rst').onclick=()=>{if(S&&(S.over||confirm('重新開始會清除目前進度，確定嗎？')))newGame(S.mode,S.mode=='ch'?S.start:undefined)};
-$('rAgain').onclick=()=>newGame(S.mode,S.mode=='ch'?S.start:undefined);$('rMenu').onclick=openMenu;$('menuB').onclick=openMenu;
-$('ctl').onclick=()=>{ST.ctl=ST.ctl=='cross'?'swipe':'cross';cancelG();draw();persist()};
-$('snd').onclick=()=>{ST.snd=ST.snd?0:1;ac();draw();persist()};$('anim').onclick=()=>{ST.anim=ST.anim?0:1;draw();persist()};
-$('hintT').onchange=e=>{ST.hint=e.target.checked?1:0;draw();persist()};$('sens').oninput=e=>{ST.sens=+e.target.value;persist()};
-setInterval(()=>{if(S)$('time').textContent=fmt(el())},250);
-document.body.classList.toggle('na',!ST.anim);openMenu();
-</script></body></html>
+(() => {
+  "use strict";
+
+  /**************************************************************
+   * 1. 常數與靶面幾何設定 (第五章)
+   **************************************************************/
+  const SECTORS = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+  const R_INNER_BULL = 14;
+  const R_OUTER_BULL = 32;
+  const R_TRIPLE_IN = 98;
+  const R_TRIPLE_OUT = 114;
+  const R_DOUBLE_IN = 174;
+  const R_DOUBLE_OUT = 190;
+  const R_BOARD_EDGE = 235;
+
+  const CHALLENGE_TARGETS = [40, 50, 61, 80, 100, 121, 141, 170];
+  const STORAGE_KEYS = {
+    SETTINGS: "darts501_v12_settings",
+    ACTIVE_GAME: "darts501_v12_active_game",
+    STATS_501: "darts501_v12_stats_501",
+    STATS_PRACTICE: "darts501_v12_stats_practice",
+    STATS_CHALLENGE: "darts501_v12_stats_challenge"
+  };
+
+  /**************************************************************
+   * 2. 預設設定與統計結構 (第十章、第十一章、第十四章)
+   **************************************************************/
+  const defaultSettings = () => ({
+    controlMode: "CROSSHAIR", // CROSSHAIR | SWIPE
+    powerSens: 1.0,
+    xSens: 1.0,
+    breathing: true,
+    trajectory: true,
+    sound: true,
+    volume: 0.8,
+    animLevel: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "OFF" : "FULL",
+    showHints: true
+  });
+
+  const defaultStats501 = () => ({
+    completedGames: 0,
+    bestSingleDart: 0,
+    bestValidRound: 0,
+    totalValidDarts: 0,
+    totalValidScore: 0,
+    totalValidRounds: 0,
+    checkoutAttempts: 0,
+    checkoutSuccess: 0,
+    count180: 0,
+    highestCheckout: 0,
+    fastestWinMs: null,
+    totalBusts: 0,
+    settledMatchIds: []
+  });
+
+  const defaultStatsPractice = () => ({
+    totalDarts: 0,
+    totalScore: 0,
+    bestSingleDart: 0,
+    bestRound: 0
+  });
+
+  const defaultStatsChallenge = () => {
+    const records = {};
+    CHALLENGE_TARGETS.forEach(t => {
+      records[t] = { successes: 0, fails: 0, bestDarts: null, bestTimeMs: null };
+    });
+    return {
+      bestSingleDart: 0,
+      bestRound: 0,
+      checkoutAttempts: 0,
+      checkoutSuccess: 0,
+      targets: records
+    };
+  };
+
+  let storageAvailable = true;
+  let settings = defaultSettings();
+  let stats501 = defaultStats501();
+  let statsPractice = defaultStatsPractice();
+  let statsChallenge = defaultStatsChallenge();
+
+  /**************************************************************
+   * 3. localStorage 安全讀寫封裝 (第十四章)
+   **************************************************************/
+  function checkStorage() {
+    try {
+      const testKey = "__dart_test__";
+      localStorage.setItem(testKey, "1");
+      localStorage.removeItem(testKey);
+      storageAvailable = true;
+      document.getElementById("storage-warning").style.display = "none";
+    } catch (e) {
+      storageAvailable = false;
+      document.getElementById("storage-warning").style.display = "block";
+    }
+  }
+
+  function loadStorage(key, fallbackFactory) {
+    if (!storageAvailable) return fallbackFactory();
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallbackFactory();
+      return Object.assign(fallbackFactory(), JSON.parse(raw));
+    } catch (e) {
+      return fallbackFactory();
+    }
+  }
+
+  function saveStorage(key, data) {
+    if (!storageAvailable) return;
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      storageAvailable = false;
+      document.getElementById("storage-warning").style.display = "block";
+    }
+  }
+
+  /**************************************************************
+   * 4. Web Audio API 合成音效系統 (第八章 8.5)
+   **************************************************************/
+  let audioCtx = null;
+
+  function ensureAudio() {
+    if (!settings.sound) return null;
+    try {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function playSynthSound(type) {
+    if (!settings.sound || settings.volume <= 0) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(settings.volume * 0.4, now);
+      master.connect(ctx.destination);
+
+      if (type === "HIT") {
+        const osc = ctx.createOscillator();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(75, now + 0.08);
+        master.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.connect(master);
+        osc.start(now);
+        osc.stop(now + 0.09);
+      } else if (type === "MISS") {
+        const osc = ctx.createOscillator();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(110, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
+        master.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+        osc.connect(master);
+        osc.start(now);
+        osc.stop(now + 0.13);
+      } else if (type === "T20_BULL") {
+        [523.25, 659.25, 1046.5].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+          g.gain.setValueAtTime(settings.volume * 0.35, now + idx * 0.04);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.22);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + idx * 0.04);
+          osc.stop(now + idx * 0.04 + 0.22);
+        });
+      } else if (type === "180") {
+        [440, 554.37, 659.25, 880, 1108.73].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+          g.gain.setValueAtTime(settings.volume * 0.3, now + idx * 0.06);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.35);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + idx * 0.06);
+          osc.stop(now + idx * 0.06 + 0.35);
+        });
+      } else if (type === "BUST") {
+        [240, 180].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+          g.gain.setValueAtTime(settings.volume * 0.35, now + idx * 0.14);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.18);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + idx * 0.14);
+          osc.stop(now + idx * 0.14 + 0.18);
+        });
+      } else if (type === "WIN") {
+        [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          g.gain.setValueAtTime(settings.volume * 0.4, now + idx * 0.08);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.45);
+        });
+      }
+    } catch (e) {
+      // 忽略音訊錯誤，不影響計分
+    }
+  }
+
+  /**************************************************************
+   * 5. 智能結標路線與霓虹目標引擎 (第六章、第七章)
+   **************************************************************/
+  const ALL_TARGETS = [];
+  // 建立合法投擲目標清單 (優先排序直覺路線)
+  ALL_TARGETS.push({ code: "BULL", label: "內牛眼 50", score: 50, isDouble: true, ring: "INNER_BULL", sector: 25 });
+  for (let s = 20; s >= 1; s--) {
+    ALL_TARGETS.push({ code: `D${s}`, label: `D${s}`, score: s * 2, isDouble: true, ring: "DOUBLE", sector: s });
+  }
+  for (let s = 20; s >= 1; s--) {
+    ALL_TARGETS.push({ code: `T${s}`, label: `T${s}`, score: s * 3, isDouble: false, ring: "TRIPLE", sector: s });
+  }
+  ALL_TARGETS.push({ code: "OBULL", label: "外牛眼 25", score: 25, isDouble: false, ring: "OUTER_BULL", sector: 25 });
+  for (let s = 20; s >= 1; s--) {
+    ALL_TARGETS.push({ code: `S${s}`, label: `S${s}`, score: s, isDouble: false, ring: "SINGLE", sector: s });
+  }
+
+  const DOUBLE_TARGETS = ALL_TARGETS.filter(t => t.isDouble);
+  // 首選高分推進順序 (T20, T19, T18, T17...)
+  const FIRST_DART_PREF = [
+    ...ALL_TARGETS.filter(t => t.ring === "TRIPLE"),
+    ALL_TARGETS.find(t => t.code === "BULL"),
+    ALL_TARGETS.find(t => t.code === "OBULL"),
+    ...ALL_TARGETS.filter(t => t.ring === "SINGLE"),
+    ...ALL_TARGETS.filter(t => t.ring === "DOUBLE")
+  ];
+
+  function computeCheckoutRoutes(remScore, dartsLeft) {
+    if (remScore <= 1 || remScore > 170 || dartsLeft <= 0) {
+      return { canCheckout: false, routes: [] };
+    }
+    const routes = [];
+
+    // 1 鏢結標
+    if (dartsLeft >= 1) {
+      for (const d of DOUBLE_TARGETS) {
+        if (d.score === remScore) {
+          routes.push([d]);
+        }
+      }
+    }
+
+    // 2 鏢結標
+    if (dartsLeft >= 2 && routes.length < 4) {
+      for (const first of FIRST_DART_PREF) {
+        const remAfter1 = remScore - first.score;
+        if (remAfter1 <= 1) continue;
+        for (const second of DOUBLE_TARGETS) {
+          if (second.score === remAfter1) {
+            routes.push([first, second]);
+            if (routes.length >= 5) break;
+          }
+        }
+        if (routes.length >= 5) break;
+      }
+    }
+
+    // 3 鏢結標
+    if (dartsLeft >= 3 && routes.length < 4) {
+      for (const first of FIRST_DART_PREF) {
+        const rem1 = remScore - first.score;
+        if (rem1 <= 2) continue;
+        for (const second of FIRST_DART_PREF) {
+          const rem2 = rem1 - second.score;
+          if (rem2 <= 1) continue;
+          for (const third of DOUBLE_TARGETS) {
+            if (third.score === rem2) {
+              routes.push([first, second, third]);
+              if (routes.length >= 5) break;
+            }
+          }
+          if (routes.length >= 5) break;
+        }
+        if (routes.length >= 5) break;
+      }
+    }
+
+    // 驗證每條路線最後一鏢為合法雙倍且總和恰好為 remScore
+    const validRoutes = routes.filter(r => {
+      const sum = r.reduce((acc, item) => acc + item.score, 0);
+      const last = r[r.length - 1];
+      return sum === remScore && last && last.isDouble && r.length <= dartsLeft;
+    });
+
+    return {
+      canCheckout: validRoutes.length > 0,
+      routes: validRoutes
+    };
+  }
+
+  /**************************************************************
+   * 6. 靶面繪製與命中座標判定 (第五章)
+   **************************************************************/
+  const svgBoard = document.getElementById("dartboard");
+  let segmentElements = {};
+  let dynamicLayer = null;
+  let previewLayer = null;
+
+  function polarToCartesian(cx, cy, r, angleDeg) {
+    const rad = ((angleDeg - 90) * Math.PI) / 180.0;
+    return {
+      x: cx + r * Math.cos(rad),
+      y: cy + r * Math.sin(rad)
+    };
+  }
+
+  function createAnnularSectorPath(rIn, rOut, startAngle, endAngle) {
+    const p1 = polarToCartesian(0, 0, rOut, endAngle);
+    const p2 = polarToCartesian(0, 0, rOut, startAngle);
+    const p3 = polarToCartesian(0, 0, rIn, startAngle);
+    const p4 = polarToCartesian(0, 0, rIn, endAngle);
+    const largeArc = endAngle - startAngle <= 180 ? "0" : "1";
+    return [
+      `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
+      `A ${rOut} ${rOut} 0 ${largeArc} 0 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
+      `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
+      `A ${rIn} ${rIn} 0 ${largeArc} 1 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
+      "Z"
+    ].join(" ");
+  }
+
+  function renderDartboardSVG() {
+    svgBoard.innerHTML = "";
+    segmentElements = {};
+
+    // 外圈黑底
+    const outerBg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    outerBg.setAttribute("cx", "0");
+    outerBg.setAttribute("cy", "0");
+    outerBg.setAttribute("r", R_BOARD_EDGE);
+    outerBg.setAttribute("fill", "#0b0e14");
+    outerBg.setAttribute("stroke", "#334155");
+    outerBg.setAttribute("stroke-width", "3");
+    svgBoard.appendChild(outerBg);
+
+    const segGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    svgBoard.appendChild(segGroup);
+
+    SECTORS.forEach((num, idx) => {
+      const centerAngle = idx * 18;
+      const startAngle = centerAngle - 9;
+      const endAngle = centerAngle + 9;
+      const isEven = idx % 2 === 0;
+      const singleColor = isEven ? "#141820" : "#f3ead8";
+      const ringColor = isEven ? "#d62828" : "#1b9aaa";
+
+      // 內單倍區
+      const pSingleIn = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      pSingleIn.setAttribute("d", createAnnularSectorPath(R_OUTER_BULL, R_TRIPLE_IN, startAngle, endAngle));
+      pSingleIn.setAttribute("fill", singleColor);
+      pSingleIn.setAttribute("stroke", "#64748b");
+      pSingleIn.setAttribute("stroke-width", "0.8");
+      segGroup.appendChild(pSingleIn);
+
+      // 外單倍區
+      const pSingleOut = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      pSingleOut.setAttribute("d", createAnnularSectorPath(R_TRIPLE_OUT, R_DOUBLE_IN, startAngle, endAngle));
+      pSingleOut.setAttribute("fill", singleColor);
+      pSingleOut.setAttribute("stroke", "#64748b");
+      pSingleOut.setAttribute("stroke-width", "0.8");
+      segGroup.appendChild(pSingleOut);
+      segmentElements[`S${num}`] = [pSingleIn, pSingleOut];
+
+      // 三倍環
+      const pTriple = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      pTriple.setAttribute("d", createAnnularSectorPath(R_TRIPLE_IN, R_TRIPLE_OUT, startAngle, endAngle));
+      pTriple.setAttribute("fill", ringColor);
+      pTriple.setAttribute("stroke", "#94a3b8");
+      pTriple.setAttribute("stroke-width", "1");
+      segGroup.appendChild(pTriple);
+      segmentElements[`T${num}`] = [pTriple];
+
+      // 雙倍環
+      const pDouble = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      pDouble.setAttribute("d", createAnnularSectorPath(R_DOUBLE_IN, R_DOUBLE_OUT, startAngle, endAngle));
+      pDouble.setAttribute("fill", ringColor);
+      pDouble.setAttribute("stroke", "#94a3b8");
+      pDouble.setAttribute("stroke-width", "1");
+      segGroup.appendChild(pDouble);
+      segmentElements[`D${num}`] = [pDouble];
+
+      // 靶面外圍數字
+      const labelPos = polarToCartesian(0, 0, 212, centerAngle);
+      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      txt.setAttribute("x", labelPos.x.toFixed(2));
+      txt.setAttribute("y", labelPos.y.toFixed(2));
+      txt.setAttribute("fill", "#f8fafc");
+      txt.setAttribute("font-size", "16");
+      txt.setAttribute("font-weight", "800");
+      txt.setAttribute("text-anchor", "middle");
+      txt.setAttribute("dominant-baseline", "central");
+      txt.textContent = num;
+      svgBoard.appendChild(txt);
+    });
+
+    // 外牛眼 (25)
+    const outerBull = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    outerBull.setAttribute("cx", "0");
+    outerBull.setAttribute("cy", "0");
+    outerBull.setAttribute("r", R_OUTER_BULL);
+    outerBull.setAttribute("fill", "#1b9aaa");
+    outerBull.setAttribute("stroke", "#e2e8f0");
+    outerBull.setAttribute("stroke-width", "1.2");
+    svgBoard.appendChild(outerBull);
+    segmentElements["OBULL"] = [outerBull];
+
+    // 內牛眼 (50 / D25)
+    const innerBull = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    innerBull.setAttribute("cx", "0");
+    innerBull.setAttribute("cy", "0");
+    innerBull.setAttribute("r", R_INNER_BULL);
+    innerBull.setAttribute("fill", "#d62828");
+    innerBull.setAttribute("stroke", "#e2e8f0");
+    innerBull.setAttribute("stroke-width", "1.2");
+    svgBoard.appendChild(innerBull);
+    segmentElements["BULL"] = [innerBull];
+
+    // 預覽與飛鏢落點圖層
+    previewLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    dynamicLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    svgBoard.appendChild(previewLayer);
+    svgBoard.appendChild(dynamicLayer);
+  }
+
+  // 座標命中判定 (第五章 5.2)
+  function evaluateHitFromCoords(x, y) {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      return { score: 0, multiplier: 0, isDouble: false, code: "MISS", label: "靶外 0", x: 0, y: 0 };
+    }
+    const r = Math.hypot(x, y);
+    if (r <= R_INNER_BULL) {
+      return { score: 50, multiplier: 2, isDouble: true, code: "BULL", label: "內牛眼 50", sector: 25, x, y };
+    }
+    if (r <= R_OUTER_BULL) {
+      return { score: 25, multiplier: 1, isDouble: false, code: "OBULL", label: "外牛眼 25", sector: 25, x, y };
+    }
+    if (r > R_DOUBLE_OUT) {
+      return { score: 0, multiplier: 0, isDouble: false, code: "MISS", label: "靶外 0", sector: 0, x, y };
+    }
+
+    // 計算角度 (以正上方 12 點鐘方向為 0 度，順時針增加)
+    let deg = (Math.atan2(x, -y) * 180) / Math.PI;
+    if (deg < 0) deg += 360;
+    const sectorIdx = Math.floor(((deg + 9) % 360) / 18);
+    const sectorNum = SECTORS[sectorIdx];
+
+    if (r >= R_DOUBLE_IN && r <= R_DOUBLE_OUT) {
+      return { score: sectorNum * 2, multiplier: 2, isDouble: true, code: `D${sectorNum}`, label: `D${sectorNum} (${sectorNum * 2})`, sector: sectorNum, x, y };
+    }
+    if (r >= R_TRIPLE_IN && r <= R_TRIPLE_OUT) {
+      return { score: sectorNum * 3, multiplier: 3, isDouble: false, code: `T${sectorNum}`, label: `T${sectorNum} (${sectorNum * 3})`, sector: sectorNum, x, y };
+    }
+    return { score: sectorNum, multiplier: 1, isDouble: false, code: `S${sectorNum}`, label: `S${sectorNum} (${sectorNum})`, sector: sectorNum, x, y };
+  }
+
+  /**************************************************************
+   * 7. 粒子與視覺回饋系統 (第八章)
+   **************************************************************/
+  const fxCanvas = document.getElementById("fx-canvas");
+  const fxCtx = fxCanvas.getContext("2d");
+  let particles = [];
+
+  function spawnGoldParticles(svgX, svgY, intensity = 30) {
+    if (settings.animLevel === "OFF") return;
+    const count = settings.animLevel === "SIMPLE" ? Math.min(12, intensity) : intensity;
+    const cx = svgX + 260;
+    const cy = svgY + 260;
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 1.5 + Math.random() * 5.5;
+      particles.push({
+        x: cx,
+        y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1,
+        radius: 2 + Math.random() * 3.5,
+        alpha: 1,
+        color: Math.random() > 0.25 ? "#f5c542" : "#ffffff"
+      });
+    }
+  }
+
+  function updateParticles() {
+    fxCtx.clearRect(0, 0, 520, 520);
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.12;
+      p.alpha -= 0.024;
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+      fxCtx.save();
+      fxCtx.globalAlpha = Math.max(0, p.alpha);
+      fxCtx.fillStyle = p.color;
+      fxCtx.beginPath();
+      fxCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      fxCtx.fill();
+      fxCtx.restore();
+    }
+    requestAnimationFrame(updateParticles);
+  }
+
+  function triggerScreenShake() {
+    if (settings.animLevel !== "FULL") return;
+    const wrapper = document.getElementById("board-wrapper");
+    wrapper.classList.remove("shake");
+    void wrapper.offsetWidth;
+    wrapper.classList.add("shake");
+  }
+
+  let bannerTimeout = null;
+  function showFloatingBanner(text, color = "var(--gold)") {
+    const el = document.getElementById("floating-banner");
+    el.textContent = text;
+    el.style.color = color;
+    el.classList.add("show");
+    if (bannerTimeout) clearTimeout(bannerTimeout);
+    bannerTimeout = setTimeout(() => {
+      el.classList.remove("show");
+    }, 1100);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 1800);
+  }
+
+  /**************************************************************
+   * 8. 遊戲核心狀態與 Undo 快照管理 (第二章、第三章、第九章)
+   **************************************************************/
+  let game = null;
+
+  function createNewGame(mode = "501", subOption = null) {
+    const startScore = mode === "501" ? 501 : mode === "CHALLENGE" ? (subOption || 40) : 0;
+    return {
+      matchId: "M_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+      mode, // "501" | "PRACTICE" | "CHALLENGE"
+      practiceFilter: mode === "PRACTICE" ? (subOption || "FREE") : "FREE",
+      challengeTarget: mode === "CHALLENGE" ? (subOption || 40) : null,
+      state: "PLAYING", // READY, PLAYING, THROWING, ROUND_END, BUST, WON, PAUSED, PRACTICE, CHECKOUT_CHALLENGE
+      remScore: startScore,
+      roundStartScore: startScore,
+      roundNumber: 1,
+      dartsInTurn: 0,
+      currentTurnThrows: [],
+      allThrows: [],
+      undoStack: [], // 完整保存每次投擲前的狀態與統計快照
+      elapsedMs: 0,
+      lastTickTs: performance.now(),
+      timerRunning: true,
+      settled: false
+    };
+  }
+
+  function cloneDeep(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  // 計時器更新 (第十三章 13.1：以實際經過時間為基準)
+  function updateTimerLoop() {
+    if (game && game.timerRunning && (game.state === "PLAYING" || game.state === "ROUND_END" || game.state === "BUST")) {
+      const now = performance.now();
+      const delta = Math.max(0, now - game.lastTickTs);
+      game.elapsedMs += delta;
+      game.lastTickTs = now;
+    } else if (game) {
+      game.lastTickTs = performance.now();
+    }
+    renderTimer();
+    requestAnimationFrame(updateTimerLoop);
+  }
+
+  function formatTime(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const mins = String(Math.floor(totalSec / 60)).padStart(2, "0");
+    const secs = String(totalSec % 60).padStart(2, "0");
+    const tenths = Math.floor((ms % 1000) / 100);
+    return `${mins}:${secs}.${tenths}`;
+  }
+
+  function renderTimer() {
+    const el = document.getElementById("timer-display");
+    el.textContent = game ? formatTime(game.elapsedMs) : "00:00.0";
+  }
+
+  /**************************************************************
+   * 9. 計分判定優先順序與 Undo 系統 (第三章 3.5、第九章)
+   **************************************************************/
+  function canAcceptThrow() {
+    if (!game) return false;
+    if (game.state !== "PLAYING") return false;
+    if (game.dartsInTurn >= 3) return false;
+    return true;
+  }
+
+  function commitDartThrow(svgX, svgY) {
+    // 步驟 6：確認目前允許投擲，且手勢尚未提交
+    if (!canAcceptThrow()) return;
+    game.state = "THROWING";
+
+    // 建立 Undo 完整快照（包含目前對局與三個獨立統計狀態）
+    const snapshot = {
+      remScore: game.remScore,
+      roundStartScore: game.roundStartScore,
+      roundNumber: game.roundNumber,
+      dartsInTurn: game.dartsInTurn,
+      currentTurnThrows: cloneDeep(game.currentTurnThrows),
+      allThrows: cloneDeep(game.allThrows),
+      state: "PLAYING",
+      timerRunning: game.timerRunning,
+      settled: game.settled,
+      stats501: cloneDeep(stats501),
+      statsPractice: cloneDeep(statsPractice),
+      statsChallenge: cloneDeep(statsChallenge)
+    };
+    game.undoStack.push(snapshot);
+
+    // 步驟 7：根據靶面座標計算命中區域
+    const hit = evaluateHitFromCoords(svgX, svgY);
+
+    // 練習模式子項目過濾檢查
+    let effectiveScore = hit.score;
+    let practiceNote = "";
+    if (game.mode === "PRACTICE" && game.practiceFilter !== "FREE") {
+      const f = game.practiceFilter;
+      const matchFilter =
+        (f === "SINGLE" && hit.multiplier === 1 && hit.code !== "OBULL") ||
+        (f === "DOUBLE" && hit.multiplier === 2 && hit.code !== "BULL") ||
+        (f === "TRIPLE" && hit.multiplier === 3) ||
+        (f === "BULL" && (hit.code === "BULL" || hit.code === "OBULL"));
+      if (!matchFilter && hit.score > 0) {
+        practiceNote = " (非指定練習目標)";
+      }
+    }
+
+    // 判斷投擲前是否處於合法結標機會 (剩餘 <= 170 且存在 1 鏢雙倍結標可能)
+    const hadOneDartDoubleOpportunity =
+      (game.mode === "501" || game.mode === "CHALLENGE") &&
+      (game.remScore === 50 || (game.remScore <= 40 && game.remScore >= 2 && game.remScore % 2 === 0));
+
+    game.dartsInTurn += 1;
+
+    // 步驟 8：計算本鏢得分與候選剩餘分數
+    if (game.mode === "PRACTICE") {
+      game.remScore += effectiveScore;
+      const rec = {
+        round: game.roundNumber,
+        dartIndex: game.dartsInTurn,
+        hit,
+        score: effectiveScore,
+        remAfter: game.remScore,
+        status: "VALID",
+        note: practiceNote
+      };
+      game.currentTurnThrows.push(rec);
+      game.allThrows.push(rec);
+
+      // 更新練習統計
+      statsPractice.totalDarts += 1;
+      statsPractice.totalScore += effectiveScore;
+      if (effectiveScore > statsPractice.bestSingleDart) statsPractice.bestSingleDart = effectiveScore;
+      const turnSum = game.currentTurnThrows.reduce((a, b) => a + b.score, 0);
+      if (turnSum > statsPractice.bestRound) statsPractice.bestRound = turnSum;
+
+      triggerHitFeedback(hit, turnSum, false, false);
+
+      if (game.dartsInTurn >= 3) {
+        game.roundNumber += 1;
+        game.dartsInTurn = 0;
+        game.currentTurnThrows = [];
+      }
+      game.state = "PLAYING";
+      saveAllState();
+      renderAll();
+      return;
+    }
+
+    // 501 標準對局 或 結標挑戰模式
+    const candidateRem = game.remScore - effectiveScore;
+
+    // 步驟 9：判定 Bust 條件 (小於 0、恰好為 1、或為 0 但非合法雙倍)
+    const isBust =
+      candidateRem < 0 ||
+      candidateRem === 1 ||
+      (candidateRem === 0 && !hit.isDouble);
+
+    // 步驟 10：若未 Bust，判定 Double Out 勝利
+    const isWin = !isBust && candidateRem === 0 && hit.isDouble;
+
+    if (hadOneDartDoubleOpportunity) {
+      if (game.mode === "501") stats501.checkoutAttempts += 1;
+      if (game.mode === "CHALLENGE") statsChallenge.checkoutAttempts += 1;
+    }
+
+    if (isBust) {
+      let bustReason = "Bust（超過分數）";
+      if (candidateRem === 1) bustReason = "Bust（剩餘 1 分無法雙倍結標）";
+      else if (candidateRem === 0 && !hit.isDouble) bustReason = "Bust（最後一鏢非雙倍/內牛眼）";
+
+      // Bust 發生時剩餘分數恢復至本回合起始值
+      game.remScore = game.roundStartScore;
+      const rec = {
+        round: game.roundNumber,
+        dartIndex: game.dartsInTurn,
+        hit,
+        score: 0,
+        rawScore: effectiveScore,
+        remAfter: game.roundStartScore,
+        status: "BUST",
+        note: bustReason
+      };
+      // 將本回合先前已投的飛鏢標記為因 Bust 失效
+      game.currentTurnThrows.forEach(t => { t.invalidatedByBust = true; });
+      game.currentTurnThrows.push(rec);
+      game.allThrows.push(rec);
+
+      if (game.mode === "501") {
+        stats501.totalBusts += 1;
+        // 退回本回合前幾鏢已加進去的統計
+        const prevValidInTurn = game.currentTurnThrows.slice(0, -1);
+        prevValidInTurn.forEach(pt => {
+          stats501.totalValidDarts = Math.max(0, stats501.totalValidDarts - 1);
+          stats501.totalValidScore = Math.max(0, stats501.totalValidScore - pt.score);
+        });
+      } else if (game.mode === "CHALLENGE") {
+        statsChallenge.targets[game.challengeTarget].fails += 1;
+      }
+
+      playSynthSound("BUST");
+      showFloatingBanner("BUST!", "var(--danger)");
+      game.state = "BUST";
+
+      // 結標挑戰若 Bust 直接結束該次挑戰，也可選擇下一回合重試或 Undo
+      saveAllState();
+      renderAll();
+      return;
+    }
+
+    // 有效得分
+    game.remScore = candidateRem;
+    const rec = {
+      round: game.roundNumber,
+      dartIndex: game.dartsInTurn,
+      hit,
+      score: effectiveScore,
+      remAfter: game.remScore,
+      status: isWin ? "WIN" : "VALID",
+      note: isWin ? "合法 Double Out 結標！" : ""
+    };
+    game.currentTurnThrows.push(rec);
+    game.allThrows.push(rec);
+
+    // 更新單鏢統計
+    if (game.mode === "501") {
+      stats501.totalValidDarts += 1;
+      stats501.totalValidScore += effectiveScore;
+      if (effectiveScore > stats501.bestSingleDart) {
+        stats501.bestSingleDart = effectiveScore;
+      }
+    } else if (game.mode === "CHALLENGE") {
+      if (effectiveScore > statsChallenge.bestSingleDart) {
+        statsChallenge.bestSingleDart = effectiveScore;
+      }
+    }
+
+    const turnTotal = game.currentTurnThrows.reduce((sum, t) => sum + t.score, 0);
+
+    if (isWin) {
+      game.state = "WON";
+      game.timerRunning = false;
+      triggerHitFeedback(hit, turnTotal, true, false);
+      settleWinStats(turnTotal);
+      saveAllState();
+      renderAll();
+      openSummaryModal();
+      return;
+    }
+
+    // 步驟 11：若未結束對局，判定回合是否已投滿三鏢
+    const isTurnComplete = game.dartsInTurn >= 3;
+    const is180 = isTurnComplete && turnTotal === 180;
+
+    triggerHitFeedback(hit, turnTotal, false, is180);
+
+    if (isTurnComplete) {
+      if (game.mode === "501") {
+        stats501.totalValidRounds += 1;
+        if (turnTotal > stats501.bestValidRound) {
+          stats501.bestValidRound = turnTotal;
+        }
+        if (is180) {
+          stats501.count180 += 1;
+        }
+      } else if (game.mode === "CHALLENGE") {
+        if (turnTotal > statsChallenge.bestRound) {
+          statsChallenge.bestRound = turnTotal;
+        }
+        // 結標挑戰三鏢用完仍未結標 -> 挑戰失敗
+        statsChallenge.targets[game.challengeTarget].fails += 1;
+        showFloatingBanner("挑戰未達成!", "var(--danger)");
+      }
+      // 自動推進或進入本回合結束狀態（為讓玩家清楚看落點，直接自動開啟新回合並保留落點至下一鏢投出前，或點按鈕）
+      advanceToNextRound();
+    } else {
+      game.state = "PLAYING";
+    }
+
+    // 步驟 12：更新歷史、統計、動畫與自動存檔
+    saveAllState();
+    renderAll();
+  }
+
+  function advanceToNextRound() {
+    if (!game) return;
+    if (game.mode === "CHALLENGE") {
+      // 結標挑戰失敗後重置回該挑戰起始分數供再次挑戰
+      game.remScore = game.challengeTarget;
+      game.roundStartScore = game.challengeTarget;
+      game.roundNumber += 1;
+      game.dartsInTurn = 0;
+      game.currentTurnThrows = [];
+      game.state = "PLAYING";
+      return;
+    }
+    game.roundNumber += 1;
+    game.roundStartScore = game.remScore;
+    game.dartsInTurn = 0;
+    game.currentTurnThrows = [];
+    game.state = "PLAYING";
+  }
+
+  function triggerHitFeedback(hit, turnTotal, isWin, is180) {
+    if (isWin) {
+      playSynthSound("WIN");
+      spawnGoldParticles(hit.x, hit.y, 65);
+      triggerScreenShake();
+      showFloatingBanner("CHECKOUT WIN!", "var(--gold)");
+      return;
+    }
+    if (is180) {
+      playSynthSound("180");
+      spawnGoldParticles(hit.x, hit.y, 70);
+      triggerScreenShake();
+      showFloatingBanner("🔥 180! 🔥", "var(--gold)");
+      return;
+    }
+    if (hit.code === "T20" || hit.code === "BULL") {
+      playSynthSound("T20_BULL");
+      spawnGoldParticles(hit.x, hit.y, 38);
+      triggerScreenShake();
+      showFloatingBanner(hit.code === "BULL" ? "BULLSEYE 50!" : "T20! +60", "var(--gold)");
+      return;
+    }
+    if (hit.code === "OBULL") {
+      playSynthSound("HIT");
+      spawnGoldParticles(hit.x, hit.y, 16);
+      showFloatingBanner("25", "#38bdf8");
+      return;
+    }
+    if (hit.score > 0) {
+      playSynthSound("HIT");
+      showFloatingBanner(`+${hit.score}`, "#f8fafc");
+    } else {
+      playSynthSound("MISS");
+      showFloatingBanner("MISS 0", "var(--text-muted)");
+    }
+  }
+
+  function settleWinStats(turnTotal) {
+    if (!game || game.settled) return;
+    game.settled = true;
+
+    if (game.mode === "501") {
+      if (!stats501.settledMatchIds.includes(game.matchId)) {
+        stats501.settledMatchIds.push(game.matchId);
+      }
+      stats501.completedGames += 1;
+      stats501.totalValidRounds += 1;
+      stats501.checkoutSuccess += 1;
+      if (turnTotal > stats501.bestValidRound) {
+        stats501.bestValidRound = turnTotal;
+      }
+      if (game.roundStartScore > stats501.highestCheckout) {
+        stats501.highestCheckout = game.roundStartScore;
+      }
+      if (stats501.fastestWinMs === null || game.elapsedMs < stats501.fastestWinMs) {
+        stats501.fastestWinMs = Math.round(game.elapsedMs);
+      }
+    } else if (game.mode === "CHALLENGE") {
+      statsChallenge.checkoutSuccess += 1;
+      if (turnTotal > statsChallenge.bestRound) {
+        statsChallenge.bestRound = turnTotal;
+      }
+      const tRec = statsChallenge.targets[game.challengeTarget];
+      tRec.successes += 1;
+      if (tRec.bestDarts === null || game.dartsInTurn < tRec.bestDarts) {
+        tRec.bestDarts = game.dartsInTurn;
+      }
+      if (tRec.bestTimeMs === null || game.elapsedMs < tRec.bestTimeMs) {
+        tRec.bestTimeMs = Math.round(game.elapsedMs);
+      }
+    }
+  }
+
+  // 第九章：Undo 撤銷系統
+  function performUndo() {
+    if (!game || !game.undoStack || game.undoStack.length === 0) return;
+    if (game.state === "THROWING") return;
+
+    const snap = game.undoStack.pop();
+    game.remScore = snap.remScore;
+    game.roundStartScore = snap.roundStartScore;
+    game.roundNumber = snap.roundNumber;
+    game.dartsInTurn = snap.dartsInTurn;
+    game.currentTurnThrows = snap.currentTurnThrows;
+    game.allThrows = snap.allThrows;
+    game.state = snap.state;
+    game.timerRunning = true;
+    game.lastTickTs = performance.now();
+    game.settled = snap.settled;
+
+    // 完整還原統計，確保已撤銷的 180、勝利或最高分不殘留
+    stats501 = snap.stats501;
+    statsPractice = snap.statsPractice;
+    statsChallenge = snap.statsChallenge;
+
+    document.getElementById("modal-summary").classList.remove("active");
+    saveAllState();
+    renderAll();
+    showToast("↩ 已撤銷上一鏢並完整還原狀態");
+  }
+
+  /**************************************************************
+   * 10. 雙操作模式：Crosshair Breathing & Swipe Throw (第四章)
+   **************************************************************/
+  let pointerPos = { x: 0, y: 0, active: false };
+  let swipeState = {
+    active: false,
+    pointerId: null,
+    startX: 0,
+    startY: 0,
+    currX: 0,
+    currY: 0,
+    startTime: 0,
+    previewTarget: { x: 0, y: 0 }
+  };
+
+  function clientToSvgCoords(clientX, clientY) {
+    const rect = svgBoard.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return { x: 0, y: 0 };
+    const normX = (clientX - rect.left) / rect.width;
+    const normY = (clientY - rect.top) / rect.height;
+    return {
+      x: (normX - 0.5) * 520,
+      y: (normY - 0.5) * 520
+    };
+  }
+
+  function computeSwipeLanding(sState) {
+    const dx = sState.currX - sState.startX;
+    const dy = sState.currY - sState.startY; // 向上拖曳時 dy 為負值
+    const dt = Math.max(18, performance.now() - sState.startTime);
+    const upDist = Math.max(0, -dy);
+    const speed = (upDist / dt) * 1000; // px / sec
+
+    // 第四章 4.2：速度係數 speed/650 結合垂直距離與靈敏度映射
+    const speedFactor = (speed / 650) * settings.powerSens;
+    const distFactor = (upDist / 190) * settings.powerSens;
+    const combinedPower = (distFactor * 0.65 + speedFactor * 0.35);
+
+    // 起始瞄準在底部 (y = +210)，隨力度往上推進至靶面頂端
+    const rawY = 210 - combinedPower * 270;
+    const rawX = dx * 1.15 * settings.xSens;
+
+    // 限制在可控範圍內，避免極端手勢跑出畫面外無限遠
+    const clampedX = Math.max(-245, Math.min(245, rawX));
+    const clampedY = Math.max(-245, Math.min(245, rawY));
+    return { x: clampedX, y: clampedY, upDist };
+  }
+
+  function setupBoardInputEvents() {
+    const container = document.getElementById("board-container");
+
+    container.addEventListener("pointermove", (e) => {
+      const pt = clientToSvgCoords(e.clientX, e.clientY);
+      pointerPos.x = pt.x;
+      pointerPos.y = pt.y;
+      pointerPos.active = true;
+
+      if (settings.controlMode === "SWIPE" && swipeState.active && e.pointerId === swipeState.pointerId) {
+        e.preventDefault();
+        swipeState.currX = pt.x;
+        swipeState.currY = pt.y;
+        swipeState.previewTarget = computeSwipeLanding(swipeState);
+      }
+    });
+
+    container.addEventListener("pointerdown", (e) => {
+      ensureAudio();
+      if (!canAcceptThrow()) return;
+      e.preventDefault();
+      const pt = clientToSvgCoords(e.clientX, e.clientY);
+      pointerPos.x = pt.x;
+      pointerPos.y = pt.y;
+      pointerPos.active = true;
+
+      if (settings.controlMode === "CROSSHAIR") {
+        // 4.1：點擊靶面即提交投擲，呼吸動畫不改變實際命中座標
+        commitDartThrow(pt.x, pt.y);
+      } else {
+        // 4.2：開始 Swipe 手勢
+        container.setPointerCapture(e.pointerId);
+        swipeState.active = true;
+        swipeState.pointerId = e.pointerId;
+        swipeState.startX = pt.x;
+        swipeState.startY = pt.y;
+        swipeState.currX = pt.x;
+        swipeState.currY = pt.y;
+        swipeState.startTime = performance.now();
+        swipeState.previewTarget = computeSwipeLanding(swipeState);
+      }
+    });
+
+    container.addEventListener("pointerup", (e) => {
+      if (settings.controlMode === "SWIPE" && swipeState.active && e.pointerId === swipeState.pointerId) {
+        e.preventDefault();
+        const landing = computeSwipeLanding(swipeState);
+        swipeState.active = false;
+        swipeState.pointerId = null;
+        previewLayer.innerHTML = "";
+        // 向上拖曳距離太短視為取消手勢，不消耗飛鏢 (B07)
+        if (landing.upDist < 14) {
+          showToast("手勢過短已取消，未消耗飛鏢");
+          return;
+        }
+        // 4.2：放開提交後實際落點與最終計算結果一致
+        commitDartThrow(landing.x, landing.y);
+      }
+    });
+
+    container.addEventListener("pointercancel", () => {
+      if (swipeState.active) {
+        swipeState.active = false;
+        swipeState.pointerId = null;
+        previewLayer.innerHTML = "";
+      }
+    });
+
+    container.addEventListener("pointerleave", () => {
+      pointerPos.active = false;
+    });
+  }
+
+  // 繪製準星呼吸效果與 Swipe 黃金虛線軌跡
+  function renderPreviewOverlay() {
+    previewLayer.innerHTML = "";
+    if (game && game.state === "PLAYING") {
+      if (settings.controlMode === "CROSSHAIR" && pointerPos.active) {
+        const t = performance.now() / 1000;
+        // 4.1：準星可有輕微呼吸擺動，但僅屬視覺效果，不改變實際點擊命中座標
+        const breathOffset = (settings.breathing && settings.animLevel !== "OFF")
+          ? Math.sin(t * 4.2) * 3.2
+          : 0;
+        const cx = pointerPos.x;
+        const cy = pointerPos.y + breathOffset;
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("pointer-events", "none");
+
+        const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        ring.setAttribute("cx", cx.toFixed(2));
+        ring.setAttribute("cy", cy.toFixed(2));
+        ring.setAttribute("r", "12");
+        ring.setAttribute("fill", "none");
+        ring.setAttribute("stroke", "#f5c542");
+        ring.setAttribute("stroke-width", "1.8");
+
+        const hLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        hLine.setAttribute("x1", (cx - 17).toFixed(2));
+        hLine.setAttribute("y1", cy.toFixed(2));
+        hLine.setAttribute("x2", (cx + 17).toFixed(2));
+        hLine.setAttribute("y2", cy.toFixed(2));
+        hLine.setAttribute("stroke", "#f5c542");
+        hLine.setAttribute("stroke-width", "1.4");
+
+        const vLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        vLine.setAttribute("x1", cx.toFixed(2));
+        vLine.setAttribute("y1", (cy - 17).toFixed(2));
+        vLine.setAttribute("x2", cx.toFixed(2));
+        vLine.setAttribute("y2", (cy + 17).toFixed(2));
+        vLine.setAttribute("stroke", "#f5c542");
+        vLine.setAttribute("stroke-width", "1.4");
+
+        g.appendChild(ring);
+        g.appendChild(hLine);
+        g.appendChild(vLine);
+        previewLayer.appendChild(g);
+      } else if (settings.controlMode === "SWIPE" && swipeState.active && settings.trajectory) {
+        const target = swipeState.previewTarget;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const midX = (swipeState.startX + target.x) / 2;
+        const midY = Math.min(swipeState.startY, target.y) - 45;
+        path.setAttribute("d", `M ${swipeState.startX.toFixed(1)} ${swipeState.startY.toFixed(1)} Q ${midX.toFixed(1)} ${midY.toFixed(1)} ${target.x.toFixed(1)} ${target.y.toFixed(1)}`);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "#f5c542");
+        path.setAttribute("stroke-width", "3");
+        path.setAttribute("stroke-dasharray", "6,6");
+        previewLayer.appendChild(path);
+
+        const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        dot.setAttribute("cx", target.x.toFixed(1));
+        dot.setAttribute("cy", target.y.toFixed(1));
+        dot.setAttribute("r", "8");
+        dot.setAttribute("fill", "rgba(245, 197, 66, 0.35)");
+        dot.setAttribute("stroke", "#f5c542");
+        dot.setAttribute("stroke-width", "2");
+        previewLayer.appendChild(dot);
+      }
+    }
+    requestAnimationFrame(renderPreviewOverlay);
+  }
+
+  /**************************************************************
+   * 11. 畫面更新與渲染 (第六章、第七章、第十二章)
+   **************************************************************/
+  function renderAll() {
+    if (!game) return;
+
+    // 動畫等級切換
+    document.body.classList.toggle("no-anim", settings.animLevel === "OFF");
+
+    // 頂部模式與狀態
+    const modeNames = {
+      "501": "501 標準 (Double Out)",
+      "PRACTICE": `練習模式 (${game.practiceFilter})`,
+      "CHALLENGE": `結標挑戰 (${game.challengeTarget}分)`
+    };
+    document.getElementById("header-mode").textContent = modeNames[game.mode] || "501 標準";
+    document.getElementById("status-banner").textContent = `狀態：${game.state}`;
+    document.getElementById("control-indicator").textContent =
+      settings.controlMode === "CROSSHAIR" ? "模式 A：準星點擊 (Crosshair)" : "模式 B：向上滑動投擲 (Swipe)";
+    document.getElementById("btn-switch-ctrl").textContent =
+      settings.controlMode === "CROSSHAIR" ? "🎯 切換為滑動投擲" : "🎯 切換為準星點擊";
+
+    // 分數區
+    document.getElementById("rem-score").textContent = game.remScore;
+    document.getElementById("rem-score-label").textContent = game.mode === "PRACTICE" ? "累計總分" : "剩餘分數";
+    document.getElementById("round-counter").textContent = `第 ${game.roundNumber} 回合`;
+    document.getElementById("turn-start-info").textContent =
+      game.mode === "PRACTICE" ? "自由累計" : `回合起始：${game.roundStartScore}`;
+
+    const turnSum = game.currentTurnThrows.reduce((a, b) => a + b.score, 0);
+    document.getElementById("turn-score").textContent = turnSum;
+    document.getElementById("darts-used").textContent = `${game.dartsInTurn} / 3`;
+
+    // 本回合三鏢欄位
+    for (let i = 0; i < 3; i++) {
+      const slot = document.getElementById(`slot-${i}`);
+      const valSpan = slot.querySelector(".dart-slot-val");
+      slot.classList.toggle("active", game.state === "PLAYING" && game.dartsInTurn === i);
+      const t = game.currentTurnThrows[i];
+      if (t) {
+        valSpan.textContent = t.status === "BUST" ? `BUST (${t.hit.code})` : `${t.hit.code} (${t.score})`;
+        valSpan.style.color = t.status === "BUST" ? "var(--danger)" : t.score >= 50 ? "var(--gold)" : "var(--text-main)";
+      } else {
+        valSpan.textContent = "-";
+        valSpan.style.color = "var(--text-main)";
+      }
+    }
+
+    // Bust 時顯示「開始下一回合」按鈕 (3.4：必須開始下一回合才能繼續)
+    const nextRoundBar = document.getElementById("next-round-bar");
+    nextRoundBar.style.display = game.state === "BUST" ? "block" : "none";
+
+    // Undo 按鈕狀態
+    document.getElementById("btn-undo").disabled = !game.undoStack || game.undoStack.length === 0 || game.state === "THROWING";
+
+    // 渲染子模式選單 (練習模式或結標挑戰)
+    renderSubmodeBar();
+
+    // 更新智能結標路線與靶面霓虹提示
+    renderTacticalAndNeon();
+
+    // 渲染飛鏢落點標記
+    renderDartMarkers();
+
+    // 渲染投擲歷史列表
+    renderHistoryList();
+  }
+
+  function renderSubmodeBar() {
+    const bar = document.getElementById("submode-bar");
+    if (game.mode === "PRACTICE") {
+      bar.style.display = "flex";
+      const opts = [
+        { k: "FREE", label: "自由投擲" },
+        { k: "SINGLE", label: "單倍練習" },
+        { k: "DOUBLE", label: "雙倍練習" },
+        { k: "TRIPLE", label: "三倍練習" },
+        { k: "BULL", label: "牛眼練習" }
+      ];
+      bar.innerHTML = opts.map(o =>
+        `<button class="${game.practiceFilter === o.k ? 'primary' : ''}" data-prac="${o.k}">${o.label}</button>`
+      ).join("");
+      bar.querySelectorAll("button[data-prac]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          game.practiceFilter = btn.getAttribute("data-prac");
+          saveAllState();
+          renderAll();
+        });
+      });
+    } else if (game.mode === "CHALLENGE") {
+      bar.style.display = "flex";
+      bar.innerHTML = CHALLENGE_TARGETS.map(num => {
+        const check = computeCheckoutRoutes(num, 3);
+        if (!check.canCheckout) return "";
+        return `<button class="${game.challengeTarget === num ? 'primary' : ''}" data-chal="${num}">挑戰 ${num}</button>`;
+      }).join("");
+      bar.querySelectorAll("button[data-chal]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const target = parseInt(btn.getAttribute("data-chal"), 10);
+          game = createNewGame("CHALLENGE", target);
+          saveAllState();
+          renderAll();
+        });
+      });
+    } else {
+      bar.style.display = "none";
+    }
+  }
+
+  function renderTacticalAndNeon() {
+    // 先清除所有霓虹框線
+    Object.values(segmentElements).forEach(arr => {
+      arr.forEach(el => el.classList.remove("neon-target"));
+    });
+
+    const primaryEl = document.getElementById("route-primary");
+    const altEl = document.getElementById("route-alt");
+    const dartsLeft = Math.max(0, 3 - game.dartsInTurn);
+
+    if (!settings.showHints) {
+      primaryEl.textContent = "結標提示已關閉";
+      altEl.textContent = "可勾選上方「顯示提示」重新開啟";
+      return;
+    }
+
+    if (game.mode === "PRACTICE") {
+      primaryEl.textContent = `練習模式：${game.practiceFilter}`;
+      altEl.textContent = "不強制 501 Double Out，紀錄獨立保存";
+      return;
+    }
+
+    if (game.state === "WON") {
+      primaryEl.textContent = "🎉 已完成合法 Double Out 結標！";
+      altEl.textContent = "恭喜獲勝！";
+      return;
+    }
+
+    if (game.state === "BUST") {
+      primaryEl.textContent = "⚠️ 本回合發生 Bust！分數已回復至回合起始值";
+      altEl.textContent = "請點擊「開始下一回合」或使用 Undo 撤銷";
+      return;
+    }
+
+    if (game.remScore > 170) {
+      primaryEl.textContent = `剩餘 ${game.remScore} 分 | 建議推進：T20 → T20 → T20`;
+      altEl.textContent = `本回合可用鏢數：${dartsLeft} 鏢（≤170 分時啟動結標導引）`;
+      return;
+    }
+
+    const res = computeCheckoutRoutes(game.remScore, dartsLeft);
+    if (!res.canCheckout) {
+      primaryEl.textContent = `剩餘 ${game.remScore} 分（${dartsLeft} 鏢內目前無法直接結標）`;
+      // 給出推進安全雙倍區建議，不標亮虛假結標目標 (C04)
+      const setupTarget = game.remScore > 60 ? "T20" : game.remScore % 2 === 1 ? "S1" : "S20";
+      altEl.textContent = `一般得分整分建議：先投 ${setupTarget} 留雙倍結標分`;
+      return;
+    }
+
+    const bestRoute = res.routes[0];
+    const routeStr = bestRoute.map(step => step.code === "BULL" ? "Bull 50" : step.code).join(" → ");
+    const lastTarget = bestRoute[bestRoute.length - 1];
+    primaryEl.textContent = `剩餘 ${game.remScore} 分 | 建議：${routeStr}`;
+
+    if (res.routes.length > 1) {
+      const secondRoute = res.routes[1].map(step => step.code === "BULL" ? "Bull 50" : step.code).join(" → ");
+      altEl.textContent = `可用 ${dartsLeft} 鏢 | 其他路線：${secondRoute} | 最後一鏢：${lastTarget.label}`;
+    } else {
+      altEl.textContent = `可用 ${dartsLeft} 鏢 | 首選目標：${bestRoute[0].label}（結標點：${lastTarget.label}）`;
+    }
+
+    // 點亮當前第一鏢建議的合法目標區
+    const firstStepCode = bestRoute[0].code;
+    if (segmentElements[firstStepCode]) {
+      segmentElements[firstStepCode].forEach(el => {
+        el.classList.add("neon-target");
+        // 移至父層最後方確保霓虹邊框不被相鄰色塊壓住
+        el.parentNode.appendChild(el);
+      });
+    }
+  }
+
+  function renderDartMarkers() {
+    dynamicLayer.innerHTML = "";
+    if (!game) return;
+
+    // 繪製最近三鏢（或本回合）落點，並區分順序 1, 2, 3 與 Bust 失效標記
+    const markersToDraw = game.currentTurnThrows.length > 0
+      ? game.currentTurnThrows
+      : game.allThrows.slice(-3);
+
+    markersToDraw.forEach((t, idx) => {
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      const isBustDart = t.status === "BUST" || t.invalidatedByBust;
+      const color = isBustDart ? "#ef4444" : "#f5c542";
+
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", t.hit.x.toFixed(1));
+      circle.setAttribute("cy", t.hit.y.toFixed(1));
+      circle.setAttribute("r", "7");
+      circle.setAttribute("fill", color);
+      circle.setAttribute("stroke", "#000");
+      circle.setAttribute("stroke-width", "1.5");
+
+      const numTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      numTxt.setAttribute("x", t.hit.x.toFixed(1));
+      numTxt.setAttribute("y", t.hit.y.toFixed(1));
+      numTxt.setAttribute("fill", "#000");
+      numTxt.setAttribute("font-size", "9");
+      numTxt.setAttribute("font-weight", "900");
+      numTxt.setAttribute("text-anchor", "middle");
+      numTxt.setAttribute("dominant-baseline", "central");
+      numTxt.textContent = t.dartIndex || (idx + 1);
+
+      g.appendChild(circle);
+      g.appendChild(numTxt);
+      dynamicLayer.appendChild(g);
+    });
+  }
+
+  function renderHistoryList() {
+    const container = document.getElementById("history-list");
+    if (!game || game.allThrows.length === 0) {
+      container.innerHTML = `<div style="color:var(--text-muted); text-align:center; padding:12px 0;">尚無投擲紀錄</div>`;
+      return;
+    }
+    const recent = game.allThrows.slice().reverse().slice(0, 18);
+    container.innerHTML = recent.map(item => {
+      let rightBadge = `剩餘 ${item.remAfter}`;
+      if (item.status === "BUST") {
+        rightBadge = `<span class="badge-bust">${item.note} (回復 ${item.remAfter})</span>`;
+      } else if (item.status === "WIN") {
+        rightBadge = `<span class="badge-win">🏆 勝利結標！</span>`;
+      } else if (item.invalidatedByBust) {
+        rightBadge = `<span class="badge-bust">因同回合 Bust 失效</span>`;
+      }
+      return `
+        <div class="history-item">
+          <span>R${item.round}-${item.dartIndex}: <strong>${item.hit.label}</strong> ${item.note && item.status === 'VALID' ? item.note : ''}</span>
+          <span>${rightBadge}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  /**************************************************************
+   * 12. 自動存檔與對局恢復 (第十三章 13.2、13.3)
+   **************************************************************/
+  function saveAllState() {
+    saveStorage(STORAGE_KEYS.SETTINGS, settings);
+    saveStorage(STORAGE_KEYS.STATS_501, stats501);
+    saveStorage(STORAGE_KEYS.STATS_PRACTICE, statsPractice);
+    saveStorage(STORAGE_KEYS.STATS_CHALLENGE, statsChallenge);
+    if (game) {
+      saveStorage(STORAGE_KEYS.ACTIVE_GAME, game);
+    }
+  }
+
+  function hasResumableGame() {
+    if (!storageAvailable) return false;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.ACTIVE_GAME);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      return parsed && parsed.state !== "WON" && Array.isArray(parsed.allThrows) && parsed.allThrows.length > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**************************************************************
+   * 13. 統計視窗與結算畫面 (第十章)
+   **************************************************************/
+  function renderStatsModal() {
+    const box = document.getElementById("stats-content");
+    const avg3Dart = stats501.totalValidDarts > 0
+      ? ((stats501.totalValidScore / stats501.totalValidDarts) * 3).toFixed(1)
+      : "0.0";
+    const avgRound = stats501.totalValidRounds > 0
+      ? (stats501.totalValidScore / stats501.totalValidRounds).toFixed(1)
+      : "0.0";
+    const checkoutRate = stats501.checkoutAttempts > 0
+      ? ((stats501.checkoutSuccess / stats501.checkoutAttempts) * 100).toFixed(1) + "%"
+      : "0.0% (0/0)";
+    const fastestStr = stats501.fastestWinMs !== null ? formatTime(stats501.fastestWinMs) : "尚無紀錄";
+
+    let challengeRows = "";
+    CHALLENGE_TARGETS.forEach(t => {
+      const c = statsChallenge.targets[t] || { successes: 0, fails: 0, bestDarts: null, bestTimeMs: null };
+      challengeRows += `
+        <tr>
+          <td>${t} 分</td>
+          <td>${c.successes} 勝 / ${c.fails} 敗</td>
+          <td>${c.bestDarts !== null ? c.bestDarts + " 鏢" : "-"}</td>
+          <td>${c.bestTimeMs !== null ? formatTime(c.bestTimeMs) : "-"}</td>
+        </tr>
+      `;
+    });
+
+    box.innerHTML = `
+      <h4 style="color:var(--gold); margin-bottom:6px;">🏆 501 標準對局 — 進階統計與個人最佳紀錄</h4>
+      <table class="stats-table">
+        <tr><th>完成對局數</th><td>${stats501.completedGames}</td><th>最快勝利時間</th><td>${fastestStr}</td></tr>
+        <tr><th>最高單鏢分數</th><td>${stats501.bestSingleDart}</td><th>最高有效回合分</th><td>${stats501.bestValidRound}</td></tr>
+        <tr><th>三鏢平均分 (3DA)</th><td>${avg3Dart}</td><th>每回合平均分</th><td>${avgRound}</td></tr>
+        <tr><th>結標成功率</th><td>${checkoutRate}</td><th>最高結標分數</th><td>${stats501.highestCheckout}</td></tr>
+        <tr><th>180 次數</th><td>${stats501.count180}</td><th>Bust 次數</th><td>${stats501.totalBusts}</td></tr>
+      </table>
+
+      <h4 style="color:var(--gold); margin:14px 0 6px;">🎯 練習模式獨立統計（不混入 501 紀錄）</h4>
+      <table class="stats-table">
+        <tr><th>累計投擲鏢數</th><td>${statsPractice.totalDarts}</td><th>累計總得分</th><td>${statsPractice.totalScore}</td></tr>
+        <tr><th>練習最高單鏢</th><td>${statsPractice.bestSingleDart}</td><th>練習最高回合</th><td>${statsPractice.bestRound}</td></tr>
+      </table>
+
+      <h4 style="color:var(--gold); margin:14px 0 6px;">⚡ 結標挑戰模式獨立紀錄</h4>
+      <table class="stats-table">
+        <thead><tr><th>挑戰分數</th><th>完成 / 失敗</th><th>最佳用鏢數</th><th>最佳時間</th></tr></thead>
+        <tbody>${challengeRows}</tbody>
+      </table>
+    `;
+  }
+
+  function openSummaryModal() {
+    if (!game) return;
+    const modal = document.getElementById("modal-summary");
+    const body = document.getElementById("summary-body");
+    const validThrows = game.allThrows.filter(t => t.status !== "BUST" && !t.invalidatedByBust);
+    const totalScore = validThrows.reduce((s, t) => s + t.score, 0);
+    const avg3 = validThrows.length > 0 ? ((totalScore / validThrows.length) * 3).toFixed(1) : "0.0";
+    const bestDartInMatch = validThrows.reduce((m, t) => Math.max(m, t.score), 0);
+    const bustCountInMatch = game.allThrows.filter(t => t.status === "BUST").length;
+    const lastThrow = game.allThrows[game.allThrows.length - 1];
+
+    body.innerHTML = `
+      <p><strong>模式：</strong>${game.mode === "501" ? "501 標準對局" : `結標挑戰 (${game.challengeTarget}分)`}</p>
+      <p><strong>完成時間：</strong>${formatTime(game.elapsedMs)}</p>
+      <p><strong>總回合數 / 總用鏢數：</strong>${game.roundNumber} 回合（共 ${game.allThrows.length} 鏢）</p>
+      <p><strong>最後結標鏢：</strong>${lastThrow ? lastThrow.hit.label : "-"}（結標回合起始：${game.roundStartScore} 分）</p>
+      <p><strong>本局單鏢最高分：</strong>${bestDartInMatch} 分</p>
+      <p><strong>本局三鏢平均分：</strong>${avg3} 分</p>
+      <p><strong>本局 Bust 次數：</strong>${bustCountInMatch} 次</p>
+    `;
+    modal.classList.add("active");
+  }
+
+  /**************************************************************
+   * 14. 事件綁定與初始化流程
+   **************************************************************/
+  function initEvents() {
+    // 戰術提示開關
+    const chkHints = document.getElementById("toggle-hints");
+    chkHints.addEventListener("change", () => {
+      settings.showHints = chkHints.checked;
+      saveAllState();
+      renderAll();
+    });
+
+    // 下一回合按鈕 (Bust 後)
+    document.getElementById("btn-next-round").addEventListener("click", () => {
+      advanceToNextRound();
+      saveAllState();
+      renderAll();
+    });
+
+    // Undo 按鈕
+    document.getElementById("btn-undo").addEventListener("click", performUndo);
+    document.getElementById("btn-summary-undo").addEventListener("click", performUndo);
+
+    // 切換操作模式 (4.3：切換時若有未提交手勢，取消手勢且不消耗飛鏢)
+    document.getElementById("btn-switch-ctrl").addEventListener("click", () => {
+      swipeState.active = false;
+      previewLayer.innerHTML = "";
+      settings.controlMode = settings.controlMode === "CROSSHAIR" ? "SWIPE" : "CROSSHAIR";
+      saveAllState();
+      renderAll();
+      showToast(`已切換為 ${settings.controlMode === "CROSSHAIR" ? "Crosshair 準星點擊" : "Swipe 向上滑動投擲"}`);
+    });
+
+    // 重新開始確認 (15.1：重新開始需確認)
+    document.getElementById("btn-restart").addEventListener("click", () => {
+      if (!confirm("確定要重新開始目前對局嗎？當前未完成的進度將會重設。")) return;
+      if (game.mode === "CHALLENGE") {
+        game = createNewGame("CHALLENGE", game.challengeTarget);
+      } else if (game.mode === "PRACTICE") {
+        game = createNewGame("PRACTICE", game.practiceFilter);
+      } else {
+        game = createNewGame("501");
+      }
+      saveAllState();
+      renderAll();
+      showToast("已重新開始新局");
+    });
+
+    // 暫停按鈕 (13.4)
+    document.getElementById("btn-pause").addEventListener("click", () => {
+      if (!game) return;
+      if (game.state === "PAUSED") {
+        game.state = "PLAYING";
+        game.timerRunning = true;
+        game.lastTickTs = performance.now();
+        document.getElementById("btn-pause").textContent = "⏸ 暫停";
+      } else if (game.state === "PLAYING") {
+        game.state = "PAUSED";
+        game.timerRunning = false;
+        document.getElementById("btn-pause").textContent = "▶ 繼續";
+      }
+      saveAllState();
+      renderAll();
+    });
+
+    // 主選單開關
+    const modalMenu = document.getElementById("modal-menu");
+    document.getElementById("btn-menu").addEventListener("click", () => {
+      document.getElementById("btn-resume-saved").style.display = hasResumableGame() ? "inline-flex" : "none";
+      modalMenu.classList.add("active");
+    });
+    document.getElementById("btn-close-menu").addEventListener("click", () => modalMenu.classList.remove("active"));
+
+    document.getElementById("btn-resume-saved").addEventListener("click", () => {
+      const saved = loadStorage(STORAGE_KEYS.ACTIVE_GAME, () => null);
+      if (saved) {
+        game = saved;
+        if (game.state === "THROWING") game.state = "PLAYING";
+        game.lastTickTs = performance.now();
+        game.timerRunning = game.state !== "WON" && game.state !== "PAUSED";
+        modalMenu.classList.remove("active");
+        renderAll();
+        showToast("已恢復未完成對局");
+      }
+    });
+
+    document.getElementById("btn-start-501").addEventListener("click", () => {
+      game = createNewGame("501");
+      modalMenu.classList.remove("active");
+      saveAllState();
+      renderAll();
+    });
+
+    document.getElementById("btn-start-practice").addEventListener("click", () => {
+      game = createNewGame("PRACTICE", "FREE");
+      modalMenu.classList.remove("active");
+      saveAllState();
+      renderAll();
+    });
+
+    document.getElementById("btn-start-challenge").addEventListener("click", () => {
+      game = createNewGame("CHALLENGE", 40);
+      modalMenu.classList.remove("active");
+      saveAllState();
+      renderAll();
+    });
+
+    // 統計視窗
+    const modalStats = document.getElementById("modal-stats");
+    document.getElementById("btn-open-stats").addEventListener("click", () => {
+      modalMenu.classList.remove("active");
+      renderStatsModal();
+      modalStats.classList.add("active");
+    });
+    document.getElementById("btn-close-stats").addEventListener("click", () => modalStats.classList.remove("active"));
+    document.getElementById("btn-close-stats-bottom").addEventListener("click", () => modalStats.classList.remove("active"));
+
+    // 重設個人紀錄 (14.4：再次確認且不默默刪除進行中的對局)
+    document.getElementById("btn-reset-records").addEventListener("click", () => {
+      if (!confirm("確定要重設所有個人統計與最佳紀錄嗎？（目前進行中的對局不會被刪除）")) return;
+      stats501 = defaultStats501();
+      statsPractice = defaultStatsPractice();
+      statsChallenge = defaultStatsChallenge();
+      saveAllState();
+      renderStatsModal();
+      showToast("已重設個人統計與最佳紀錄");
+    });
+
+    // 設定視窗
+    const modalSettings = document.getElementById("modal-settings");
+    function openSettingsModal() {
+      document.getElementById("sel-ctrl-mode").value = settings.controlMode;
+      document.getElementById("rng-power").value = settings.powerSens;
+      document.getElementById("val-power").textContent = settings.powerSens.toFixed(2);
+      document.getElementById("rng-x-sens").value = settings.xSens;
+      document.getElementById("val-x-sens").textContent = settings.xSens.toFixed(2);
+      document.getElementById("chk-breathing").checked = settings.breathing;
+      document.getElementById("chk-trajectory").checked = settings.trajectory;
+      document.getElementById("chk-sound").checked = settings.sound;
+      document.getElementById("rng-volume").value = settings.volume;
+      document.getElementById("val-vol").textContent = Math.round(settings.volume * 100) + "%";
+      document.getElementById("sel-anim").value = settings.animLevel;
+      modalSettings.classList.add("active");
+    }
+
+    document.getElementById("btn-settings").addEventListener("click", openSettingsModal);
+    document.getElementById("btn-open-settings-menu").addEventListener("click", () => {
+      modalMenu.classList.remove("active");
+      openSettingsModal();
+    });
+    document.getElementById("btn-close-settings").addEventListener("click", () => modalSettings.classList.remove("active"));
+
+    document.getElementById("rng-power").addEventListener("input", (e) => {
+      document.getElementById("val-power").textContent = parseFloat(e.target.value).toFixed(2);
+    });
+    document.getElementById("rng-x-sens").addEventListener("input", (e) => {
+      document.getElementById("val-x-sens").textContent = parseFloat(e.target.value).toFixed(2);
+    });
+    document.getElementById("rng-volume").addEventListener("input", (e) => {
+      document.getElementById("val-vol").textContent = Math.round(parseFloat(e.target.value) * 100) + "%";
+    });
+
+    document.getElementById("btn-reset-defaults").addEventListener("click", () => {
+      settings = defaultSettings();
+      openSettingsModal();
+      saveAllState();
+      renderAll();
+      showToast("已恢復預設操作與音效設定");
+    });
+
+    document.getElementById("btn-save-settings").addEventListener("click", () => {
+      swipeState.active = false;
+      previewLayer.innerHTML = "";
+      settings.controlMode = document.getElementById("sel-ctrl-mode").value;
+      settings.powerSens = parseFloat(document.getElementById("rng-power").value);
+      settings.xSens = parseFloat(document.getElementById("rng-x-sens").value);
+      settings.breathing = document.getElementById("chk-breathing").checked;
+      settings.trajectory = document.getElementById("chk-trajectory").checked;
+      settings.sound = document.getElementById("chk-sound").checked;
+      settings.volume = parseFloat(document.getElementById("rng-volume").value);
+      settings.animLevel = document.getElementById("sel-anim").value;
+      modalSettings.classList.remove("active");
+      saveAllState();
+      renderAll();
+      showToast("設定已儲存");
+    });
+
+    // 結算視窗按鈕
+    document.getElementById("btn-summary-again").addEventListener("click", () => {
+      document.getElementById("modal-summary").classList.remove("active");
+      if (game && game.mode === "CHALLENGE") {
+        game = createNewGame("CHALLENGE", game.challengeTarget);
+      } else {
+        game = createNewGame("501");
+      }
+      saveAllState();
+      renderAll();
+    });
+    document.getElementById("btn-summary-menu").addEventListener("click", () => {
+      document.getElementById("modal-summary").classList.remove("active");
+      modalMenu.classList.add("active");
+    });
+
+    // 背景分頁恢復時校正計時基準 (13.4)
+    document.addEventListener("visibilitychange", () => {
+      if (game) {
+        game.lastTickTs = performance.now();
+      }
+    });
+  }
+
+  function bootstrap() {
+    checkStorage();
+    settings = loadStorage(STORAGE_KEYS.SETTINGS, defaultSettings);
+    stats501 = loadStorage(STORAGE_KEYS.STATS_501, defaultStats501);
+    statsPractice = loadStorage(STORAGE_KEYS.STATS_PRACTICE, defaultStatsPractice);
+    statsChallenge = loadStorage(STORAGE_KEYS.STATS_CHALLENGE, defaultStatsChallenge);
+
+    document.getElementById("toggle-hints").checked = settings.showHints;
+
+    renderDartboardSVG();
+    setupBoardInputEvents();
+    initEvents();
+
+    // 檢查是否有可恢復的對局 (13.3)
+    const savedGame = loadStorage(STORAGE_KEYS.ACTIVE_GAME, () => null);
+    if (savedGame && savedGame.matchId) {
+      game = savedGame;
+      if (game.state === "THROWING") game.state = "PLAYING";
+      game.lastTickTs = performance.now();
+      game.timerRunning = game.state !== "WON" && game.state !== "PAUSED";
+      if (game.state !== "WON" && game.allThrows && game.allThrows.length > 0) {
+        document.getElementById("btn-resume-saved").style.display = "inline-flex";
+        document.getElementById("modal-menu").classList.add("active");
+      }
+    } else {
+      game = createNewGame("501");
+    }
+
+    renderAll();
+    requestAnimationFrame(updateTimerLoop);
+    requestAnimationFrame(renderPreviewOverlay);
+    requestAnimationFrame(updateParticles);
+  }
+
+  bootstrap();
+})();
+</script>
+</body>
+</html>
