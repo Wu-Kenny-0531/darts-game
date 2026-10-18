@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>《501飛鏢遊戲》v1.2 - 難度檔位版</title>
+<title>《501飛鏢遊戲》v1.2 - 街機對戰豪華版</title>
 <style>
   :root {
     --bg-dark: #0f1218;
@@ -11,6 +11,7 @@
     --bg-card: #222936;
     --gold: #f5c542;
     --gold-glow: rgba(245, 197, 66, 0.65);
+    --cyan: #38bdf8;
     --red: #e63946;
     --green: #2a9d8f;
     --text-main: #f1f5f9;
@@ -55,7 +56,7 @@
     align-items: center;
     gap: 8px;
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--gold);
     flex-wrap: wrap;
   }
@@ -63,14 +64,14 @@
   .mode-badge {
     background: var(--bg-card);
     color: var(--text-main);
-    font-size: 0.78rem;
-    padding: 3px 8px;
+    font-size: 0.76rem;
+    padding: 4px 8px;
     border-radius: 6px;
     border: 1px solid var(--border);
   }
 
   .diff-badge {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     padding: 4px 10px;
     border-radius: 6px;
     cursor: pointer;
@@ -86,34 +87,34 @@
   .header-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
   }
 
   .timer-box {
     font-family: monospace;
-    font-size: 1.05rem;
+    font-size: 1rem;
     background: var(--bg-card);
-    padding: 4px 10px;
+    padding: 4px 9px;
     border-radius: 6px;
     border: 1px solid var(--border);
     color: var(--gold);
   }
 
-  /* 按鈕規範：正常、懸停、按下、停用 */
   button {
     background: var(--bg-card);
     color: var(--text-main);
     border: 1px solid var(--border);
-    padding: 8px 14px;
+    padding: 7px 12px;
     border-radius: 8px;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
   }
 
   button:hover:not(:disabled) {
@@ -149,20 +150,26 @@
     background: rgba(239, 68, 68, 0.2);
   }
 
+  button.active-toggle {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(245, 197, 66, 0.15);
+  }
+
   /* 主要版面配置 */
   main {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr 400px;
     gap: 16px;
-    max-width: 1200px;
+    max-width: 1220px;
     width: 100%;
     margin: 0 auto;
     padding: 16px;
     align-items: start;
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 880px) {
     main {
       grid-template-columns: 1fr;
       padding: 10px;
@@ -246,18 +253,18 @@
     animation: screenShake 0.32s ease;
   }
 
-  /* 浮動文字特效 */
+  /* 浮動文字與街機稱號特效 */
   .floating-banner {
     position: absolute;
-    top: 50%;
+    top: 46%;
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 15;
-    font-size: 3rem;
+    font-size: 2.8rem;
     font-weight: 900;
     color: var(--gold);
-    text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 0 18px var(--gold);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.95), 0 0 18px var(--gold);
     opacity: 0;
     transition: opacity 0.2s, transform 0.35s;
     text-align: center;
@@ -267,6 +274,40 @@
   .floating-banner.show {
     opacity: 1;
     transform: translate(-50%, -60%) scale(1.08);
+  }
+
+  .arcade-award-badge {
+    position: absolute;
+    top: 64%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    pointer-events: none;
+    z-index: 16;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 25px var(--gold-glow);
+    padding: 8px 20px;
+    border-radius: 30px;
+    text-align: center;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .arcade-award-badge.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .award-title {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  .award-sub {
+    font-size: 0.78rem;
+    color: #e2e8f0;
   }
 
   /* 右側資訊與操作欄 */
@@ -280,11 +321,11 @@
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 14px;
+    padding: 13px;
   }
 
   .card-title {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -292,6 +333,58 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  /* 雙人/AI 戰況橫幅 */
+  .versus-board {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .versus-board.active {
+    display: grid;
+  }
+
+  .player-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+  }
+
+  .player-card.active-turn {
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(245, 197, 66, 0.25);
+    background: rgba(245, 197, 66, 0.08);
+  }
+
+  .player-card.bot-turn {
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    background: rgba(56, 189, 248, 0.08);
+  }
+
+  .p-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .p-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .p-score {
+    font-size: 1.55rem;
+    font-weight: 900;
+    color: var(--gold);
   }
 
   /* 分數區 */
@@ -304,28 +397,28 @@
 
   .score-box {
     background: var(--bg-card);
-    padding: 10px 6px;
+    padding: 9px 6px;
     border-radius: 8px;
     border: 1px solid var(--border);
   }
 
   .score-main {
-    font-size: 2.3rem;
+    font-size: 2.2rem;
     font-weight: 900;
     color: var(--gold);
     line-height: 1.1;
   }
 
   .score-sub {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     font-weight: 700;
     line-height: 1.3;
   }
 
   .score-label {
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     color: var(--text-muted);
-    margin-top: 4px;
+    margin-top: 3px;
   }
 
   /* 戰術區 */
@@ -334,17 +427,17 @@
     border: 1px solid rgba(245, 197, 66, 0.4);
     border-radius: 8px;
     padding: 10px;
-    margin-top: 6px;
+    margin-top: 4px;
   }
 
   .route-primary {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: var(--gold);
   }
 
   .route-alt {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-muted);
     margin-top: 4px;
   }
@@ -361,9 +454,9 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 8px;
+    padding: 7px;
     text-align: center;
-    min-height: 54px;
+    min-height: 52px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -374,20 +467,20 @@
   }
 
   .dart-slot-label {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
   }
 
   .dart-slot-val {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     margin-top: 2px;
   }
 
   .history-list {
-    max-height: 130px;
+    max-height: 125px;
     overflow-y: auto;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     border-top: 1px solid var(--border);
     padding-top: 8px;
   }
@@ -399,15 +492,9 @@
     border-bottom: 1px dashed rgba(255,255,255,0.07);
   }
 
-  .badge-bust {
-    color: var(--danger);
-    font-weight: 700;
-  }
-
-  .badge-win {
-    color: var(--gold);
-    font-weight: 700;
-  }
+  .badge-bust { color: var(--danger); font-weight: 700; }
+  .badge-win { color: var(--gold); font-weight: 700; }
+  .badge-award { color: var(--cyan); font-weight: 700; }
 
   /* 操作區 */
   .controls-grid {
@@ -437,7 +524,7 @@
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 14px;
-    max-width: 560px;
+    max-width: 580px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
@@ -454,7 +541,7 @@
   }
 
   .modal-title {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: var(--gold);
   }
@@ -465,17 +552,27 @@
     gap: 10px;
   }
 
+  .bot-selector-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .form-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 7px 0;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     gap: 12px;
   }
 
   .form-row label {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   select, input[type="range"] {
@@ -489,13 +586,13 @@
   .stats-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.88rem;
+    font-size: 0.84rem;
     margin-top: 8px;
   }
 
   .stats-table th, .stats-table td {
     border: 1px solid var(--border);
-    padding: 8px;
+    padding: 7px 8px;
     text-align: left;
   }
 
@@ -543,12 +640,14 @@
 <header>
   <div class="brand">
     <span>🎯 501飛鏢 v1.2</span>
-    <span id="header-mode" class="mode-badge">501 標準</span>
-    <button id="btn-quick-diff" class="diff-badge diff-STANDARD" title="點擊快速切換難度檔位">難度：🟡 標準娛樂</button>
+    <span id="header-mode" class="mode-badge">501 單人</span>
+    <button id="btn-quick-diff" class="diff-badge diff-STANDARD" title="點擊快速切換準星難度檔位">難度：🟡 標準娛樂</button>
   </div>
   <div class="header-right">
+    <button id="btn-bgm-toggle" title="切換背景音樂">🎵 BGM: 開</button>
+    <button id="btn-voice-toggle" title="切換裁判語音唱分">🗣️ 語音: 開</button>
     <div id="timer-display" class="timer-box">00:00.0</div>
-    <button id="btn-pause" title="暫停">⏸ 暫停</button>
+    <button id="btn-pause" title="暫停">⏸</button>
     <button id="btn-menu">☰ 主選單</button>
   </div>
 </header>
@@ -565,6 +664,10 @@
       <svg id="dartboard" viewBox="-260 -260 520 520" aria-label="飛鏢靶面"></svg>
       <canvas id="fx-canvas" width="520" height="520"></canvas>
       <div id="floating-banner" class="floating-banner">180!</div>
+      <div id="arcade-award" class="arcade-award-badge">
+        <div class="award-title" id="award-title">HAT TRICK!</div>
+        <div class="award-sub" id="award-sub">單回合三鏢全中牛眼</div>
+      </div>
     </div>
 
     <div id="diff-hint-bar" style="width:100%; text-align:center; margin-top:8px; font-size:0.78rem; color:var(--text-muted);">
@@ -576,16 +679,35 @@
 
   <!-- 右側資訊區 -->
   <aside class="side-panel">
-    <!-- 分數區 -->
+    <!-- 分數與對戰區 -->
     <div class="card">
       <div class="card-title">
-        <span id="score-title-label">剩餘分數 (501 Double Out)</span>
+        <span id="score-title-label">當前投擲者計分板</span>
         <span id="round-counter">第 1 回合</span>
       </div>
+
+      <!-- 對戰雙人計分卡 (AI 或 P1 vs P2 時顯示) -->
+      <div id="versus-board" class="versus-board">
+        <div id="pcard-0" class="player-card active-turn">
+          <div>
+            <div class="p-name" id="pname-0">P1 玩家</div>
+            <div class="p-sub" id="psub-0">先攻</div>
+          </div>
+          <div class="p-score" id="pscore-0">501</div>
+        </div>
+        <div id="pcard-1" class="player-card">
+          <div>
+            <div class="p-name" id="pname-1">AI 對手</div>
+            <div class="p-sub" id="psub-1">後攻</div>
+          </div>
+          <div class="p-score" id="pscore-1">501</div>
+        </div>
+      </div>
+
       <div class="score-grid">
         <div class="score-box">
           <div id="rem-score" class="score-main">501</div>
-          <div class="score-label" id="rem-score-label">剩餘分數</div>
+          <div class="score-label" id="rem-score-label">當前剩餘分數</div>
         </div>
         <div class="score-box">
           <div id="turn-score" class="score-sub">0</div>
@@ -615,7 +737,7 @@
     <!-- 本回合三鏢與歷史區 -->
     <div class="card">
       <div class="card-title">
-        <span>本回合投擲 & 歷史紀錄</span>
+        <span id="turn-owner-title">本回合投擲 & 歷史紀錄</span>
         <span id="turn-start-info" style="font-size:0.75rem;">回合起始：501</span>
       </div>
       <div class="turn-slots">
@@ -633,7 +755,7 @@
         </div>
       </div>
       <div id="next-round-bar" style="display:none; margin-bottom:8px;">
-        <button id="btn-next-round" class="primary" style="width:100%;">▶ 開始下一回合</button>
+        <button id="btn-next-round" class="primary" style="width:100%;">▶ 確認並繼續下一回合</button>
       </div>
       <div class="history-list" id="history-list"></div>
     </div>
@@ -645,7 +767,7 @@
         <button id="btn-undo" disabled>↩ Undo 撤銷</button>
         <button id="btn-switch-ctrl">🎯 切換為滑動投擲</button>
         <button id="btn-restart" class="danger">🔄 重新開始</button>
-        <button id="btn-settings">⚙️ 難度與操作設定</button>
+        <button id="btn-settings">⚙️ 設定與音樂</button>
       </div>
     </div>
   </aside>
@@ -660,11 +782,28 @@
     </div>
     <div class="menu-grid">
       <button id="btn-resume-saved" class="primary" style="display:none;">▶ 繼續未完成對局</button>
-      <button id="btn-start-501" class="primary">🔥 開始 501 標準對局 (Double Out)</button>
+      <button id="btn-start-501" class="primary">🔥 單人 501 標準對局 (Double Out)</button>
+
+      <!-- AI 對戰選擇區塊 -->
+      <div class="bot-selector-row">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <span style="font-weight:700; color:var(--cyan);">🤖 501 電腦 AI 對戰 (DartBot PK)</span>
+          <select id="sel-bot-level">
+            <option value="1">Lv.1 新手學徒 (3DA ~42)</option>
+            <option value="2">Lv.2 休閒玩家 (3DA ~58)</option>
+            <option value="3" selected>Lv.3 酒吧駐場老手 (3DA ~75)</option>
+            <option value="4">Lv.4 聯賽半職業 (3DA ~90)</option>
+            <option value="5">Lv.5 世界冠軍傳奇 (3DA ~108)</option>
+          </select>
+        </div>
+        <button id="btn-start-vs-bot" style="width:100%; border-color:var(--cyan); color:var(--cyan);">⚔️ 開始挑戰 AI 對手</button>
+      </div>
+
+      <button id="btn-start-vs-local">👥 本機雙人 501 對戰 (P1 vs P2 輪流投擲)</button>
       <button id="btn-start-practice">🎯 練習模式 (單倍/雙倍/三倍/牛眼/自由)</button>
       <button id="btn-start-challenge">⚡ 結標挑戰 (40 ~ 170 指定分數)</button>
-      <button id="btn-open-stats">📊 個人統計與最佳紀錄</button>
-      <button id="btn-open-settings-menu">⚙️ 難度檔位、校準與音效設定</button>
+      <button id="btn-open-stats">📊 個人統計、街機稱號與最佳紀錄</button>
+      <button id="btn-open-settings-menu">⚙️ 難度檔位、BGM 音樂與語音設定</button>
     </div>
   </div>
 </div>
@@ -673,11 +812,11 @@
 <div class="modal-overlay" id="modal-settings">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">⚙️ 難度檔位、操作校準與音效設定</div>
+      <div class="modal-title">⚙️ 難度檔位、BGM 背景音樂與操作設定</div>
       <button id="btn-close-settings">✕</button>
     </div>
     <div class="form-row">
-      <label for="sel-difficulty" style="color:var(--gold); font-weight:700;">難度檔位 (影響手震、縮圈與軌跡預覽)</label>
+      <label for="sel-difficulty" style="color:var(--gold); font-weight:700;">準星難度檔位</label>
       <select id="sel-difficulty">
         <option value="CASUAL">🟢 休閒 / 驗收 (100% 指哪打哪、完整預覽)</option>
         <option value="STANDARD">🟡 標準娛樂 (微幅 8 字呼吸縮圈、適中散射)</option>
@@ -692,11 +831,39 @@
       </select>
     </div>
     <div class="form-row">
-      <label for="rng-power">投擲力度靈敏度 (<span id="val-power">1.00</span>)</label>
+      <label for="chk-bgm" style="color:var(--cyan); font-weight:700;">🎵 背景音樂 (Web Audio BGM)</label>
+      <input type="checkbox" id="chk-bgm" checked>
+    </div>
+    <div class="form-row">
+      <label for="sel-bgm-style">背景音樂曲風</label>
+      <select id="sel-bgm-style">
+        <option value="LOFI">🍸 Pub Lounge (英倫酒吧放鬆律動)</option>
+        <option value="SYNTH">⚡ Neon Arcade (街機合成波電子)</option>
+        <option value="TENSION">🔥 Finals Arena (決賽高張力節奏)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="rng-bgm-vol">背景音樂音量 (<span id="val-bgm-vol">45%</span>)</label>
+      <input type="range" id="rng-bgm-vol" min="0" max="1" step="0.05" value="0.45">
+    </div>
+    <div class="form-row">
+      <label for="chk-voice" style="color:var(--gold); font-weight:700;">🗣️ 裁判英語唱分 (Web Speech 語音播報)</label>
+      <input type="checkbox" id="chk-voice" checked>
+    </div>
+    <div class="form-row">
+      <label for="chk-sound">合成音效開關 (命中 / 歡呼 / 特效音)</label>
+      <input type="checkbox" id="chk-sound" checked>
+    </div>
+    <div class="form-row">
+      <label for="rng-volume">音效音量 (<span id="val-vol">80%</span>)</label>
+      <input type="range" id="rng-volume" min="0" max="1" step="0.05" value="0.8">
+    </div>
+    <div class="form-row">
+      <label for="rng-power">Swipe 投擲力度靈敏度 (<span id="val-power">1.00</span>)</label>
       <input type="range" id="rng-power" min="0.5" max="1.8" step="0.05" value="1.0">
     </div>
     <div class="form-row">
-      <label for="rng-x-sens">左右偏移靈敏度 (<span id="val-x-sens">1.00</span>)</label>
+      <label for="rng-x-sens">Swipe 左右偏移靈敏度 (<span id="val-x-sens">1.00</span>)</label>
       <input type="range" id="rng-x-sens" min="0.5" max="1.8" step="0.05" value="1.0">
     </div>
     <div class="form-row">
@@ -706,14 +873,6 @@
     <div class="form-row">
       <label for="chk-trajectory">Swipe 黃金虛線軌跡預覽</label>
       <input type="checkbox" id="chk-trajectory" checked>
-    </div>
-    <div class="form-row">
-      <label for="chk-sound">合成音效開關 (Web Audio)</label>
-      <input type="checkbox" id="chk-sound" checked>
-    </div>
-    <div class="form-row">
-      <label for="rng-volume">音效音量 (<span id="val-vol">80%</span>)</label>
-      <input type="range" id="rng-volume" min="0" max="1" step="0.05" value="0.8">
     </div>
     <div class="form-row">
       <label for="sel-anim">動畫與特效等級</label>
@@ -734,7 +893,7 @@
 <div class="modal-overlay" id="modal-stats">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">📊 進階統計與個人最佳紀錄</div>
+      <div class="modal-title">📊 進階統計、街機稱號與個人最佳紀錄</div>
       <button id="btn-close-stats">✕</button>
     </div>
     <div id="stats-content"></div>
@@ -767,7 +926,7 @@
   "use strict";
 
   /**************************************************************
-   * 1. 常數、難度檔位參數與靶面幾何設定
+   * 1. 常數、難度檔位與 AI 對手參數設定
    **************************************************************/
   const SECTORS = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
   const R_INNER_BULL = 14;
@@ -780,31 +939,30 @@
 
   const CHALLENGE_TARGETS = [40, 50, 61, 80, 100, 121, 141, 170];
 
-  // 三段難度檔位定義
   const DIFFICULTY_PROFILES = {
     CASUAL: {
       name: "🟢 休閒 / 驗收",
       desc: "休閒 / 驗收檔位：100% 指哪打哪，無手震散射，顯示完整軌跡預覽。",
-      swayAmp: 0,           // 點擊時不偏移實際座標
-      visualBreathAmp: 3.0, // 純視覺呼吸擺動
+      swayAmp: 0,
+      visualBreathAmp: 3.0,
       minSpread: 0,
       maxSpread: 0,
       SpreadSigmaRatio: 0,
       swipeSigma: 0,
-      trajectoryRatio: 1.0, // 100% 畫出預估落點
+      trajectoryRatio: 1.0,
       showSwipeLandingDot: true,
       clutchMultiplier: 1.0
     },
     STANDARD: {
       name: "🟡 標準娛樂",
       desc: "標準娛樂檔位：準星呈 8 字微幅呼吸擺動，外圈縮成「綠色小圈」時出手最準！",
-      swayAmp: 8.5,         // 8字擺動幅度 (px)
+      swayAmp: 8.5,
       visualBreathAmp: 8.5,
-      minSpread: 2.0,       // 縮圈最小半徑
-      maxSpread: 13.0,      // 縮圈最大半徑
+      minSpread: 2.0,
+      maxSpread: 13.0,
       SpreadSigmaRatio: 0.42,
-      swipeSigma: 5.0,      // 滑動出手高斯標準差
-      trajectoryRatio: 0.65,// 顯示前 65% 導引線
+      swipeSigma: 5.0,
+      trajectoryRatio: 0.65,
       showSwipeLandingDot: false,
       clutchMultiplier: 1.2
     },
@@ -817,10 +975,19 @@
       maxSpread: 19.5,
       SpreadSigmaRatio: 0.52,
       swipeSigma: 8.2,
-      trajectoryRatio: 0.40,// 僅顯示前 40% 出手方向線
+      trajectoryRatio: 0.40,
       showSwipeLandingDot: false,
-      clutchMultiplier: 1.5 // 進入結標區 (<=50分) 時心跳與晃動顯著加快
+      clutchMultiplier: 1.5
     }
+  };
+
+  // 5 個等級的 AI 對手散射標準差 (px)
+  const BOT_PROFILES = {
+    1: { name: "🤖 Lv.1 新手學徒", sigma: 34 },
+    2: { name: "🤖 Lv.2 休閒玩家", sigma: 22 },
+    3: { name: "🤖 Lv.3 酒吧老手", sigma: 14.5 },
+    4: { name: "🤖 Lv.4 半職業好手", sigma: 9.5 },
+    5: { name: "🤖 Lv.5 世界冠軍", sigma: 5.8 }
   };
 
   const STORAGE_KEYS = {
@@ -832,23 +999,29 @@
   };
 
   /**************************************************************
-   * 2. 預設設定與統計結構
+   * 2. 預設設定與統計結構 (含街機稱號與對戰勝場)
    **************************************************************/
   const defaultSettings = () => ({
-    difficulty: "STANDARD", // CASUAL | STANDARD | PRO
-    controlMode: "CROSSHAIR", // CROSSHAIR | SWIPE
+    difficulty: "STANDARD",
+    controlMode: "CROSSHAIR",
     powerSens: 1.0,
     xSens: 1.0,
     breathing: true,
     trajectory: true,
     sound: true,
     volume: 0.8,
+    bgm: true,
+    bgmStyle: "LOFI", // LOFI | SYNTH | TENSION
+    bgmVolume: 0.45,
+    voice: true,
     animLevel: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "OFF" : "FULL",
     showHints: true
   });
 
   const defaultStats501 = () => ({
     completedGames: 0,
+    botWins: 0,
+    botLosses: 0,
     bestSingleDart: 0,
     bestValidRound: 0,
     totalValidDarts: 0,
@@ -860,6 +1033,14 @@
     highestCheckout: 0,
     fastestWinMs: null,
     totalBusts: 0,
+    awards: {
+      hatTrick: 0,     // 單回合三鏢全中內/外牛眼
+      ton80: 0,        // 180
+      highTon: 0,      // 151 ~ 179
+      lowTon: 0,       // 100 ~ 150
+      threeInABed: 0,  // 單回合三鏢同一三倍區
+      whiteHorse: 0    // 單回合三鏢三個不同三倍區
+    },
     settledMatchIds: []
   });
 
@@ -911,7 +1092,16 @@
     try {
       const raw = localStorage.getItem(key);
       if (!raw) return fallbackFactory();
-      return Object.assign(fallbackFactory(), JSON.parse(raw));
+      const parsed = JSON.parse(raw);
+      const base = fallbackFactory();
+      const merged = Object.assign(base, parsed);
+      if (base.awards && parsed.awards) {
+        merged.awards = Object.assign(base.awards, parsed.awards);
+      }
+      if (base.targets && parsed.targets) {
+        merged.targets = Object.assign(base.targets, parsed.targets);
+      }
+      return merged;
     } catch (e) {
       return fallbackFactory();
     }
@@ -928,12 +1118,13 @@
   }
 
   /**************************************************************
-   * 4. Web Audio API 合成音效系統
+   * 4. Web Audio API 合成音效 + BGM 背景音樂合成器 + 語音唱分
    **************************************************************/
   let audioCtx = null;
+  let bgmTimerId = null;
+  let bgmStep = 0;
 
   function ensureAudio() {
-    if (!settings.sound) return null;
     try {
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -942,10 +1133,130 @@
       if (audioCtx && audioCtx.state === "suspended") {
         audioCtx.resume();
       }
+      if (settings.bgm && !bgmTimerId) {
+        startBgmLoop();
+      }
       return audioCtx;
     } catch (e) {
       return null;
     }
+  }
+
+  // Web Audio 背景音樂 Sequencer (無須外部 MP3，純合成三種曲風)
+  const BGM_PATTERNS = {
+    LOFI: {
+      tempoMs: 280,
+      bass: [110, 0, 110, 130.81, 146.83, 0, 130.81, 98.0],
+      chords: [
+        [220, 261.63, 329.63, 392.0],
+        null,
+        null,
+        [196.0, 246.94, 293.66, 349.23],
+        [174.61, 220.0, 261.63, 329.63],
+        null,
+        [164.81, 196.0, 246.94, 329.63],
+        null
+      ]
+    },
+    SYNTH: {
+      tempoMs: 185,
+      bass: [110, 110, 220, 110, 130.81, 130.81, 261.63, 130.81, 146.83, 146.83, 293.66, 146.83, 130.81, 130.81, 196.0, 130.81],
+      arp: [440, 523.25, 659.25, 523.25, 392.0, 493.88, 587.33, 493.88]
+    },
+    TENSION: {
+      tempoMs: 160,
+      bass: [82.41, 82.41, 0, 82.41, 87.31, 82.41, 0, 98.0],
+      arp: [329.63, 0, 392.0, 329.63, 349.23, 0, 440.0, 329.63]
+    }
+  };
+
+  function playBgmStep() {
+    if (!settings.bgm || settings.bgmVolume <= 0 || (game && game.state === "PAUSED")) return;
+    if (!audioCtx || audioCtx.state !== "running") return;
+
+    try {
+      const style = BGM_PATTERNS[settings.bgmStyle] || BGM_PATTERNS.LOFI;
+      const now = audioCtx.currentTime;
+      const vol = settings.bgmVolume * 0.14;
+
+      // 低音 Bassline
+      const bassNote = style.bass[bgmStep % style.bass.length];
+      if (bassNote > 0) {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = settings.bgmStyle === "SYNTH" ? "sawtooth" : "triangle";
+        osc.frequency.setValueAtTime(bassNote, now);
+        g.gain.setValueAtTime(vol, now);
+        g.gain.exponentialRampToValueAtTime(0.0008, now + (style.tempoMs / 1000) * 0.9);
+        osc.connect(g);
+        g.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + (style.tempoMs / 1000));
+      }
+
+      // 和弦或琶音
+      if (style.chords) {
+        const chord = style.chords[bgmStep % style.chords.length];
+        if (chord) {
+          chord.forEach(freq => {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, now);
+            g.gain.setValueAtTime(vol * 0.35, now);
+            g.gain.exponentialRampToValueAtTime(0.0008, now + 0.65);
+            osc.connect(g);
+            g.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.7);
+          });
+        }
+      } else if (style.arp) {
+        const arpNote = style.arp[bgmStep % style.arp.length];
+        if (arpNote > 0) {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(arpNote, now);
+          g.gain.setValueAtTime(vol * 0.45, now);
+          g.gain.exponentialRampToValueAtTime(0.0008, now + 0.15);
+          osc.connect(g);
+          g.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.16);
+        }
+      }
+
+      bgmStep += 1;
+    } catch (e) {}
+  }
+
+  function startBgmLoop() {
+    stopBgmLoop();
+    if (!settings.bgm) return;
+    const style = BGM_PATTERNS[settings.bgmStyle] || BGM_PATTERNS.LOFI;
+    bgmTimerId = setInterval(playBgmStep, style.tempoMs);
+  }
+
+  function stopBgmLoop() {
+    if (bgmTimerId) {
+      clearInterval(bgmTimerId);
+      bgmTimerId = null;
+    }
+  }
+
+  // Web Speech API 裁判語音播報
+  function speakReferee(text) {
+    if (!settings.voice || !("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-GB";
+      utter.rate = 0.96;
+      utter.pitch = 0.85;
+      utter.volume = Math.min(1, Math.max(0.2, settings.volume));
+      window.speechSynthesis.speak(utter);
+    } catch (e) {}
   }
 
   function playSynthSound(type) {
@@ -990,6 +1301,19 @@
           osc.start(now + idx * 0.04);
           osc.stop(now + idx * 0.04 + 0.22);
         });
+      } else if (type === "AWARD") {
+        [587.33, 739.99, 880, 1174.66].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.055);
+          g.gain.setValueAtTime(settings.volume * 0.36, now + idx * 0.055);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.055 + 0.3);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + idx * 0.055);
+          osc.stop(now + idx * 0.055 + 0.3);
+        });
       } else if (type === "180") {
         [440, 554.37, 659.25, 880, 1108.73].forEach((freq, idx) => {
           const osc = ctx.createOscillator();
@@ -1030,13 +1354,11 @@
           osc.stop(now + idx * 0.08 + 0.45);
         });
       }
-    } catch (e) {
-      // 忽略音訊錯誤
-    }
+    } catch (e) {}
   }
 
   /**************************************************************
-   * 5. 智能結標路線與霓虹目標引擎
+   * 5. 智能結標路線與靶區中心座標反查 (供 AI 瞄準使用)
    **************************************************************/
   const ALL_TARGETS = [];
   ALL_TARGETS.push({ code: "BULL", label: "內牛眼 50", score: 50, isDouble: true, ring: "INNER_BULL", sector: 25 });
@@ -1115,6 +1437,22 @@
       canCheckout: validRoutes.length > 0,
       routes: validRoutes
     };
+  }
+
+  // 根據目標代碼 (如 "T20", "D16", "BULL") 取得靶面幾何中心座標，供 AI 瞄準
+  function getTargetCenterCoords(code) {
+    if (code === "BULL") return { x: 0, y: 0 };
+    if (code === "OBULL") return { x: 0, y: -22 };
+    const ringPrefix = code.charAt(0);
+    const num = parseInt(code.slice(1), 10);
+    const idx = SECTORS.indexOf(num);
+    if (idx === -1) return { x: 0, y: -106 };
+    const angleDeg = idx * 18;
+    let radius = 140;
+    if (ringPrefix === "T") radius = (R_TRIPLE_IN + R_TRIPLE_OUT) / 2;
+    else if (ringPrefix === "D") radius = (R_DOUBLE_IN + R_DOUBLE_OUT) / 2;
+    else radius = (R_TRIPLE_OUT + R_DOUBLE_IN) / 2;
+    return polarToCartesian(0, 0, radius, angleDeg);
   }
 
   /**************************************************************
@@ -1272,7 +1610,7 @@
   }
 
   /**************************************************************
-   * 7. 粒子與視覺回饋系統
+   * 7. 粒子、震動與街機稱號 (Arcade Awards) 系統
    **************************************************************/
   const fxCanvas = document.getElementById("fx-canvas");
   const fxCtx = fxCanvas.getContext("2d");
@@ -1293,7 +1631,7 @@
         vy: Math.sin(angle) * speed - 1,
         radius: 2 + Math.random() * 3.5,
         alpha: 1,
-        color: Math.random() > 0.25 ? "#f5c542" : "#ffffff"
+        color: Math.random() > 0.25 ? "#f5c542" : "#38bdf8"
       });
     }
   }
@@ -1338,7 +1676,67 @@
     if (bannerTimeout) clearTimeout(bannerTimeout);
     bannerTimeout = setTimeout(() => {
       el.classList.remove("show");
-    }, 1100);
+    }, 1150);
+  }
+
+  let awardTimeout = null;
+  function showArcadeAward(title, sub) {
+    const box = document.getElementById("arcade-award");
+    document.getElementById("award-title").textContent = title;
+    document.getElementById("award-sub").textContent = sub;
+    box.classList.add("show");
+    if (awardTimeout) clearTimeout(awardTimeout);
+    awardTimeout = setTimeout(() => {
+      box.classList.remove("show");
+    }, 2100);
+  }
+
+  // 街機稱號判定引擎
+  function evaluateTurnArcadeAwards(turnThrows, isHumanPlayer) {
+    if (!turnThrows || turnThrows.length !== 3) return null;
+    if (turnThrows.some(t => t.status === "BUST" || t.invalidatedByBust)) return null;
+
+    const codes = turnThrows.map(t => t.hit.code);
+    const total = turnThrows.reduce((s, t) => s + t.score, 0);
+
+    // 1. TON 80 (180)
+    if (total === 180) {
+      if (isHumanPlayer && game.mode === "501") stats501.awards.ton80 += 1;
+      return { key: "ton80", title: "🔥 TON 80 (180)! 🔥", sub: "單回合三鏢滿分 T20×3", speech: "One Hundred and Eighty!" };
+    }
+
+    // 2. HAT TRICK (三鏢全中內/外牛眼)
+    if (codes.every(c => c === "BULL" || c === "OBULL")) {
+      if (isHumanPlayer && game.mode === "501") stats501.awards.hatTrick += 1;
+      return { key: "hatTrick", title: "🎩 HAT TRICK!", sub: "單回合三鏢全中紅心牛眼", speech: "Hat Trick! Three Bulls!" };
+    }
+
+    // 3. THREE IN A BED (三鏢同一個三倍區，排除已算在 Ton 80 的 T20)
+    if (turnThrows.every(t => t.hit.multiplier === 3) && codes[0] === codes[1] && codes[1] === codes[2]) {
+      if (isHumanPlayer && game.mode === "501") stats501.awards.threeInABed += 1;
+      return { key: "threeInABed", title: "🎯 THREE IN A BED!", sub: `三鏢命中相同三倍區 (${codes[0]})`, speech: `Three in a bed! ${total}!` };
+    }
+
+    // 4. WHITE HORSE (三鏢命中三個不同的三倍區)
+    const uniqueTriples = new Set(turnThrows.filter(t => t.hit.multiplier === 3).map(t => t.hit.code));
+    if (uniqueTriples.size === 3) {
+      if (isHumanPlayer && game.mode === "501") stats501.awards.whiteHorse += 1;
+      return { key: "whiteHorse", title: "🐎 WHITE HORSE!", sub: "單回合命中三個不同三倍區", speech: `White Horse! ${total}!` };
+    }
+
+    // 5. HIGH TON (151 ~ 179)
+    if (total >= 151 && total <= 179) {
+      if (isHumanPlayer && game.mode === "501") stats501.awards.highTon += 1;
+      return { key: "highTon", title: "⚡ HIGH TON!", sub: `單回合高分爆發 (${total} 分)`, speech: `High Ton! ${total}!` };
+    }
+
+    // 6. LOW TON (100 ~ 150)
+    if (total >= 100 && total <= 150) {
+      if (isHumanPlayer && game.mode === "501") stats501.awards.lowTon += 1;
+      return { key: "lowTon", title: "✨ LOW TON!", sub: `單回合破百得分 (${total} 分)`, speech: `${total}!` };
+    }
+
+    return null;
   }
 
   function showToast(msg) {
@@ -1349,17 +1747,42 @@
   }
 
   /**************************************************************
-   * 8. 遊戲核心狀態與 Undo 快照管理
+   * 8. 遊戲核心狀態 (支援單人、AI 對戰、本機雙人) 與 Undo 管理
    **************************************************************/
   let game = null;
+  let botTimerId = null;
 
-  function createNewGame(mode = "501", subOption = null) {
+  function clearBotTimer() {
+    if (botTimerId) {
+      clearTimeout(botTimerId);
+      botTimerId = null;
+    }
+  }
+
+  function createNewGame(mode = "501", subOption = null, matchType = "SOLO", botLevel = 3) {
+    clearBotTimer();
     const startScore = mode === "501" ? 501 : mode === "CHALLENGE" ? (subOption || 40) : 0;
+
+    let players = [
+      { id: 0, name: "P1 玩家", isBot: false, remScore: startScore, roundStartScore: startScore }
+    ];
+
+    if (mode === "501" && matchType === "VS_BOT") {
+      const bProf = BOT_PROFILES[botLevel] || BOT_PROFILES[3];
+      players.push({ id: 1, name: bProf.name, isBot: true, botLevel, remScore: 501, roundStartScore: 501 });
+    } else if (mode === "501" && matchType === "VS_LOCAL") {
+      players.push({ id: 1, name: "P2 玩家", isBot: false, remScore: 501, roundStartScore: 501 });
+    }
+
     return {
       matchId: "M_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
-      mode,
+      mode, // "501" | "PRACTICE" | "CHALLENGE"
+      matchType, // "SOLO" | "VS_BOT" | "VS_LOCAL"
+      botLevel: botLevel || 3,
       practiceFilter: mode === "PRACTICE" ? (subOption || "FREE") : "FREE",
       challengeTarget: mode === "CHALLENGE" ? (subOption || 40) : null,
+      players,
+      activePlayerIdx: 0,
       state: "PLAYING",
       remScore: startScore,
       roundStartScore: startScore,
@@ -1371,8 +1794,23 @@
       elapsedMs: 0,
       lastTickTs: performance.now(),
       timerRunning: true,
+      winnerName: null,
       settled: false
     };
+  }
+
+  function syncActivePlayerToRoot() {
+    if (!game || !game.players) return;
+    const p = game.players[game.activePlayerIdx] || game.players[0];
+    game.remScore = p.remScore;
+    game.roundStartScore = p.roundStartScore;
+  }
+
+  function syncRootToActivePlayer() {
+    if (!game || !game.players) return;
+    const p = game.players[game.activePlayerIdx] || game.players[0];
+    p.remScore = game.remScore;
+    p.roundStartScore = game.roundStartScore;
   }
 
   function cloneDeep(obj) {
@@ -1406,20 +1844,34 @@
   }
 
   /**************************************************************
-   * 9. 計分判定優先順序與 Undo 系統
+   * 9. 計分判定、AI 自動投擲與 Undo 系統
    **************************************************************/
-  function canAcceptThrow() {
+  function isCurrentTurnBot() {
+    if (!game || !game.players) return false;
+    const p = game.players[game.activePlayerIdx];
+    return Boolean(p && p.isBot);
+  }
+
+  function canAcceptHumanThrow() {
     if (!game) return false;
     if (game.state !== "PLAYING") return false;
     if (game.dartsInTurn >= 3) return false;
+    if (isCurrentTurnBot()) return false;
     return true;
   }
 
-  function commitDartThrow(svgX, svgY) {
-    if (!canAcceptThrow()) return;
-    game.state = "THROWING";
+  function commitDartThrow(svgX, svgY, isFromBot = false) {
+    if (!game || game.state !== "PLAYING" || game.dartsInTurn >= 3) return;
+    if (!isFromBot && isCurrentTurnBot()) return;
 
+    game.state = "THROWING";
+    const activePlayer = game.players[game.activePlayerIdx] || game.players[0];
+    const isHumanP1 = activePlayer.id === 0 && !activePlayer.isBot;
+
+    // 只有人類玩家投擲時才寫入 Undo 快照 (撤銷時會一併退回 AI 投過的鏢直到人類上一鏢)
     const snapshot = {
+      players: cloneDeep(game.players),
+      activePlayerIdx: game.activePlayerIdx,
       remScore: game.remScore,
       roundStartScore: game.roundStartScore,
       roundNumber: game.roundNumber,
@@ -1428,7 +1880,9 @@
       allThrows: cloneDeep(game.allThrows),
       state: "PLAYING",
       timerRunning: game.timerRunning,
+      winnerName: game.winnerName,
       settled: game.settled,
+      isBotSnapshot: isFromBot,
       stats501: cloneDeep(stats501),
       statsPractice: cloneDeep(statsPractice),
       statsChallenge: cloneDeep(statsChallenge)
@@ -1452,6 +1906,7 @@
     }
 
     const hadOneDartDoubleOpportunity =
+      isHumanP1 &&
       (game.mode === "501" || game.mode === "CHALLENGE") &&
       (game.remScore === 50 || (game.remScore <= 40 && game.remScore >= 2 && game.remScore % 2 === 0));
 
@@ -1459,7 +1914,9 @@
 
     if (game.mode === "PRACTICE") {
       game.remScore += effectiveScore;
+      syncRootToActivePlayer();
       const rec = {
+        playerName: activePlayer.name,
         round: game.roundNumber,
         dartIndex: game.dartsInTurn,
         hit,
@@ -1480,6 +1937,12 @@
       triggerHitFeedback(hit, turnSum, false, false);
 
       if (game.dartsInTurn >= 3) {
+        const award = evaluateTurnArcadeAwards(game.currentTurnThrows, true);
+        if (award) {
+          playSynthSound("AWARD");
+          showArcadeAward(award.title, award.sub);
+          speakReferee(award.speech);
+        }
         game.roundNumber += 1;
         game.dartsInTurn = 0;
         game.currentTurnThrows = [];
@@ -1510,7 +1973,10 @@
       else if (candidateRem === 0 && !hit.isDouble) bustReason = "Bust（最後一鏢非雙倍/內牛眼）";
 
       game.remScore = game.roundStartScore;
+      syncRootToActivePlayer();
+
       const rec = {
+        playerName: activePlayer.name,
         round: game.roundNumber,
         dartIndex: game.dartsInTurn,
         hit,
@@ -1524,7 +1990,7 @@
       game.currentTurnThrows.push(rec);
       game.allThrows.push(rec);
 
-      if (game.mode === "501") {
+      if (isHumanP1 && game.mode === "501") {
         stats501.totalBusts += 1;
         const prevValidInTurn = game.currentTurnThrows.slice(0, -1);
         prevValidInTurn.forEach(pt => {
@@ -1536,16 +2002,32 @@
       }
 
       playSynthSound("BUST");
-      showFloatingBanner("BUST!", "var(--danger)");
-      game.state = "BUST";
+      speakReferee("No score!");
+      showFloatingBanner(`${activePlayer.name} BUST!`, "var(--danger)");
 
-      saveAllState();
-      renderAll();
+      if (isFromBot) {
+        // AI Bust 後自動在 1 秒後換回玩家回合
+        game.state = "PLAYING";
+        saveAllState();
+        renderAll();
+        botTimerId = setTimeout(() => {
+          advanceToNextRound();
+          saveAllState();
+          renderAll();
+        }, 1000);
+      } else {
+        game.state = "BUST";
+        saveAllState();
+        renderAll();
+      }
       return;
     }
 
     game.remScore = candidateRem;
+    syncRootToActivePlayer();
+
     const rec = {
+      playerName: activePlayer.name,
       round: game.roundNumber,
       dartIndex: game.dartsInTurn,
       hit,
@@ -1557,7 +2039,7 @@
     game.currentTurnThrows.push(rec);
     game.allThrows.push(rec);
 
-    if (game.mode === "501") {
+    if (isHumanP1 && game.mode === "501") {
       stats501.totalValidDarts += 1;
       stats501.totalValidScore += effectiveScore;
       if (effectiveScore > stats501.bestSingleDart) {
@@ -1572,10 +2054,13 @@
     const turnTotal = game.currentTurnThrows.reduce((sum, t) => sum + t.score, 0);
 
     if (isWin) {
+      clearBotTimer();
       game.state = "WON";
+      game.winnerName = activePlayer.name;
       game.timerRunning = false;
       triggerHitFeedback(hit, turnTotal, true, false);
-      settleWinStats(turnTotal);
+      speakReferee(`Game shot, and the match! ${activePlayer.isBot ? "Dart Bot wins!" : activePlayer.name + " wins!"}`);
+      settleWinStats(turnTotal, isHumanP1, activePlayer.isBot);
       saveAllState();
       renderAll();
       openSummaryModal();
@@ -1588,7 +2073,22 @@
     triggerHitFeedback(hit, turnTotal, false, is180);
 
     if (isTurnComplete) {
-      if (game.mode === "501") {
+      // 檢查街機稱號與語音播報
+      const award = evaluateTurnArcadeAwards(game.currentTurnThrows, isHumanP1);
+      if (award) {
+        if (award.key !== "ton80") playSynthSound("AWARD");
+        showArcadeAward(award.title, award.sub);
+        speakReferee(award.speech);
+      } else {
+        // 一般回合結束播報總得分，若剩餘 <= 40 播報 Require
+        if (game.remScore <= 40 && game.remScore % 2 === 0) {
+          speakReferee(`${turnTotal} scored. Require ${game.remScore}.`);
+        } else {
+          speakReferee(`${turnTotal}`);
+        }
+      }
+
+      if (isHumanP1 && game.mode === "501") {
         stats501.totalValidRounds += 1;
         if (turnTotal > stats501.bestValidRound) {
           stats501.bestValidRound = turnTotal;
@@ -1603,9 +2103,25 @@
         statsChallenge.targets[game.challengeTarget].fails += 1;
         showFloatingBanner("挑戰未達成!", "var(--danger)");
       }
-      advanceToNextRound();
+
+      if (isFromBot) {
+        game.state = "PLAYING";
+        saveAllState();
+        renderAll();
+        botTimerId = setTimeout(() => {
+          advanceToNextRound();
+          saveAllState();
+          renderAll();
+        }, 900);
+        return;
+      } else {
+        advanceToNextRound();
+      }
     } else {
       game.state = "PLAYING";
+      if (isFromBot) {
+        scheduleNextBotDart();
+      }
     }
 
     saveAllState();
@@ -1614,20 +2130,73 @@
 
   function advanceToNextRound() {
     if (!game) return;
+    clearBotTimer();
+
     if (game.mode === "CHALLENGE") {
       game.remScore = game.challengeTarget;
       game.roundStartScore = game.challengeTarget;
+      syncRootToActivePlayer();
       game.roundNumber += 1;
       game.dartsInTurn = 0;
       game.currentTurnThrows = [];
       game.state = "PLAYING";
       return;
     }
-    game.roundNumber += 1;
-    game.roundStartScore = game.remScore;
+
+    // 若為雙人或 AI 對戰，輪替下一位玩家
+    if (game.players && game.players.length > 1) {
+      game.activePlayerIdx = (game.activePlayerIdx + 1) % game.players.length;
+      if (game.activePlayerIdx === 0) {
+        game.roundNumber += 1;
+      }
+      const nextP = game.players[game.activePlayerIdx];
+      nextP.roundStartScore = nextP.remScore;
+      syncActivePlayerToRoot();
+    } else {
+      game.roundNumber += 1;
+      game.roundStartScore = game.remScore;
+      syncRootToActivePlayer();
+    }
+
     game.dartsInTurn = 0;
     game.currentTurnThrows = [];
     game.state = "PLAYING";
+
+    if (isCurrentTurnBot()) {
+      scheduleNextBotDart();
+    }
+  }
+
+  // AI 對手智能瞄準與投擲排程
+  function scheduleNextBotDart() {
+    clearBotTimer();
+    if (!game || game.state !== "PLAYING" || !isCurrentTurnBot()) return;
+
+    botTimerId = setTimeout(() => {
+      if (!game || game.state !== "PLAYING" || !isCurrentTurnBot()) return;
+      const botPlayer = game.players[game.activePlayerIdx];
+      const bProf = BOT_PROFILES[botPlayer.botLevel || game.botLevel || 3] || BOT_PROFILES[3];
+      const dartsLeft = Math.max(1, 3 - game.dartsInTurn);
+
+      // 決定 AI 要瞄準哪個區域
+      let aimCode = "T20";
+      if (game.remScore <= 170) {
+        const routeInfo = computeCheckoutRoutes(game.remScore, dartsLeft);
+        if (routeInfo.canCheckout && routeInfo.routes.length > 0) {
+          aimCode = routeInfo.routes[0][0].code;
+        } else if (game.remScore <= 60) {
+          // 無法直接結標時先削單倍留雙倍偶數分
+          if (game.remScore % 2 === 1) aimCode = "S1";
+          else if (game.remScore > 40) aimCode = `S${Math.min(20, game.remScore - 32)}`;
+          else aimCode = `D${Math.max(1, Math.floor(game.remScore / 2))}`;
+        }
+      }
+
+      const center = getTargetCenterCoords(aimCode);
+      const botX = center.x + gaussianRandom(0, bProf.sigma);
+      const botY = center.y + gaussianRandom(0, bProf.sigma);
+      commitDartThrow(botX, botY, true);
+    }, 720);
   }
 
   function triggerHitFeedback(hit, turnTotal, isWin, is180) {
@@ -1667,7 +2236,7 @@
     }
   }
 
-  function settleWinStats(turnTotal) {
+  function settleWinStats(turnTotal, isHumanP1, isBotWinner) {
     if (!game || game.settled) return;
     game.settled = true;
 
@@ -1675,17 +2244,23 @@
       if (!stats501.settledMatchIds.includes(game.matchId)) {
         stats501.settledMatchIds.push(game.matchId);
       }
-      stats501.completedGames += 1;
-      stats501.totalValidRounds += 1;
-      stats501.checkoutSuccess += 1;
-      if (turnTotal > stats501.bestValidRound) {
-        stats501.bestValidRound = turnTotal;
+      if (game.matchType === "VS_BOT") {
+        if (isBotWinner) stats501.botLosses += 1;
+        else stats501.botWins += 1;
       }
-      if (game.roundStartScore > stats501.highestCheckout) {
-        stats501.highestCheckout = game.roundStartScore;
-      }
-      if (stats501.fastestWinMs === null || game.elapsedMs < stats501.fastestWinMs) {
-        stats501.fastestWinMs = Math.round(game.elapsedMs);
+      if (isHumanP1) {
+        stats501.completedGames += 1;
+        stats501.totalValidRounds += 1;
+        stats501.checkoutSuccess += 1;
+        if (turnTotal > stats501.bestValidRound) {
+          stats501.bestValidRound = turnTotal;
+        }
+        if (game.roundStartScore > stats501.highestCheckout) {
+          stats501.highestCheckout = game.roundStartScore;
+        }
+        if (stats501.fastestWinMs === null || game.elapsedMs < stats501.fastestWinMs) {
+          stats501.fastestWinMs = Math.round(game.elapsedMs);
+        }
       }
     } else if (game.mode === "CHALLENGE") {
       statsChallenge.checkoutSuccess += 1;
@@ -1706,8 +2281,17 @@
   function performUndo() {
     if (!game || !game.undoStack || game.undoStack.length === 0) return;
     if (game.state === "THROWING") return;
+    clearBotTimer();
 
-    const snap = game.undoStack.pop();
+    // 若頂端是 AI 的投擲快照，持續退回直到回到人類玩家的上一鏢快照
+    let snap = game.undoStack.pop();
+    while (snap && snap.isBotSnapshot && game.undoStack.length > 0) {
+      snap = game.undoStack.pop();
+    }
+
+    if (!snap) return;
+    game.players = snap.players;
+    game.activePlayerIdx = snap.activePlayerIdx;
     game.remScore = snap.remScore;
     game.roundStartScore = snap.roundStartScore;
     game.roundNumber = snap.roundNumber;
@@ -1715,6 +2299,7 @@
     game.currentTurnThrows = snap.currentTurnThrows;
     game.allThrows = snap.allThrows;
     game.state = snap.state;
+    game.winnerName = snap.winnerName;
     game.timerRunning = true;
     game.lastTickTs = performance.now();
     game.settled = snap.settled;
@@ -1749,7 +2334,6 @@
     previewTarget: { x: 0, y: 0 }
   };
 
-  // 常態分佈隨機數 (Box-Muller)
   function gaussianRandom(mean = 0, stdev = 1) {
     if (stdev <= 0) return mean;
     const u = 1 - Math.random();
@@ -1811,7 +2395,7 @@
 
     container.addEventListener("pointerdown", (e) => {
       ensureAudio();
-      if (!canAcceptThrow()) return;
+      if (!canAcceptHumanThrow()) return;
       e.preventDefault();
       const pt = clientToSvgCoords(e.clientX, e.clientY);
       pointerPos.x = pt.x;
@@ -1821,14 +2405,12 @@
       if (settings.controlMode === "CROSSHAIR") {
         const profile = getActiveDiffProfile();
         if (settings.difficulty === "CASUAL") {
-          // 休閒/驗收檔位：100% 依點擊座標命中，不加任何偏移
-          commitDartThrow(pt.x, pt.y);
+          commitDartThrow(pt.x, pt.y, false);
         } else {
-          // 標準娛樂 / 職業擬真：套用當下 8字晃動偏移 + 縮圈高斯散射
           const sigma = aimState.spreadRadius * profile.SpreadSigmaRatio;
           const finalX = pt.x + aimState.offsetX + gaussianRandom(0, sigma);
           const finalY = pt.y + aimState.offsetY + gaussianRandom(0, sigma);
-          commitDartThrow(finalX, finalY);
+          commitDartThrow(finalX, finalY, false);
         }
       } else {
         container.setPointerCapture(e.pointerId);
@@ -1858,14 +2440,13 @@
 
         const profile = getActiveDiffProfile();
         if (settings.difficulty === "CASUAL") {
-          commitDartThrow(landing.x, landing.y);
+          commitDartThrow(landing.x, landing.y, false);
         } else {
-          // 若在 PRO 模式按住超過 1.8 秒未放開，產生額外疲勞手抖懲罰
           const fatigueExtra = (settings.difficulty === "PRO" && landing.holdTimeMs > 1800) ? 4.5 : 0;
           const sigma = profile.swipeSigma + fatigueExtra;
           const finalX = landing.x + gaussianRandom(0, sigma);
           const finalY = landing.y + gaussianRandom(0, sigma);
-          commitDartThrow(finalX, finalY);
+          commitDartThrow(finalX, finalY, false);
         }
       }
     });
@@ -1885,7 +2466,7 @@
 
   function renderPreviewOverlay() {
     previewLayer.innerHTML = "";
-    if (game && game.state === "PLAYING") {
+    if (game && game.state === "PLAYING" && !isCurrentTurnBot()) {
       const t = performance.now() / 1000;
       const profile = getActiveDiffProfile();
       const isClutch = (game.mode !== "PRACTICE" && game.remScore <= 50);
@@ -1893,16 +2474,14 @@
 
       if (settings.controlMode === "CROSSHAIR" && pointerPos.active) {
         if (settings.difficulty === "CASUAL") {
-          // 休閒/驗收模式：視覺呼吸不影響實際落點
           aimState.offsetX = 0;
           aimState.offsetY = (settings.breathing && settings.animLevel !== "OFF") ? Math.sin(t * 4.2) * profile.visualBreathAmp : 0;
           aimState.spreadRadius = 0;
         } else {
-          // 標準 / 職業模式：8字形李薩如晃動 + 呼吸縮圈
           const sway = (settings.breathing && settings.animLevel !== "OFF") ? profile.swayAmp * clutchMult : 0;
           aimState.offsetX = Math.sin(t * 2.6 * clutchMult) * sway;
           aimState.offsetY = Math.cos(t * 3.8 * clutchMult) * sway;
-          const wave = (Math.sin(t * 3.1 * clutchMult) + 1) / 2; // 0 ~ 1
+          const wave = (Math.sin(t * 3.1 * clutchMult) + 1) / 2;
           aimState.spreadRadius = profile.minSpread + wave * (profile.maxSpread - profile.minSpread) * clutchMult;
         }
 
@@ -1985,28 +2564,58 @@
 
     document.body.classList.toggle("no-anim", settings.animLevel === "OFF");
 
-    const modeNames = {
-      "501": "501 標準 (Double Out)",
-      "PRACTICE": `練習模式 (${game.practiceFilter})`,
-      "CHALLENGE": `結標挑戰 (${game.challengeTarget}分)`
-    };
-    document.getElementById("header-mode").textContent = modeNames[game.mode] || "501 標準";
+    // 頂部 BGM 與語音按鈕狀態
+    const bgmBtn = document.getElementById("btn-bgm-toggle");
+    bgmBtn.textContent = settings.bgm ? "🎵 BGM: 開" : "🎵 BGM: 關";
+    bgmBtn.classList.toggle("active-toggle", settings.bgm);
 
-    // 更新頂部難度快速切換按鈕與提示列
+    const voiceBtn = document.getElementById("btn-voice-toggle");
+    voiceBtn.textContent = settings.voice ? "🗣️ 語音: 開" : "🗣️ 語音: 關";
+    voiceBtn.classList.toggle("active-toggle", settings.voice);
+
+    let modeLabel = "501 單人";
+    if (game.mode === "501" && game.matchType === "VS_BOT") modeLabel = `501 對戰 AI (Lv.${game.botLevel})`;
+    else if (game.mode === "501" && game.matchType === "VS_LOCAL") modeLabel = "501 雙人對戰";
+    else if (game.mode === "PRACTICE") modeLabel = `練習 (${game.practiceFilter})`;
+    else if (game.mode === "CHALLENGE") modeLabel = `結標挑戰 (${game.challengeTarget}分)`;
+    document.getElementById("header-mode").textContent = modeLabel;
+
     const profile = getActiveDiffProfile();
     const diffBtn = document.getElementById("btn-quick-diff");
     diffBtn.textContent = `難度：${profile.name}`;
     diffBtn.className = `diff-badge diff-${settings.difficulty}`;
     document.getElementById("diff-hint-bar").textContent = profile.desc;
 
-    document.getElementById("status-banner").textContent = `狀態：${game.state}`;
+    const activePlayer = game.players ? game.players[game.activePlayerIdx] : { name: "P1 玩家", isBot: false };
+    document.getElementById("status-banner").textContent =
+      isCurrentTurnBot() ? `狀態：🤖 ${activePlayer.name} 正在瞄準投擲中...` : `狀態：${game.state} (${activePlayer.name})`;
     document.getElementById("control-indicator").textContent =
       settings.controlMode === "CROSSHAIR" ? "模式 A：準星點擊 (Crosshair)" : "模式 B：向上滑動投擲 (Swipe)";
     document.getElementById("btn-switch-ctrl").textContent =
       settings.controlMode === "CROSSHAIR" ? "🎯 切換為滑動投擲" : "🎯 切換為準星點擊";
 
+    // 對戰雙人計分板渲染
+    const vsBoard = document.getElementById("versus-board");
+    if (game.players && game.players.length > 1) {
+      vsBoard.classList.add("active");
+      game.players.forEach((p, idx) => {
+        const card = document.getElementById(`pcard-${idx}`);
+        document.getElementById(`pname-${idx}`).textContent = p.name;
+        document.getElementById(`pscore-${idx}`).textContent = p.remScore;
+        document.getElementById(`psub-${idx}`).textContent =
+          game.activePlayerIdx === idx ? "▶ 當前投擲回合" : `待機 (起始 ${p.roundStartScore})`;
+        card.className = "player-card";
+        if (game.activePlayerIdx === idx) {
+          card.classList.add(p.isBot ? "bot-turn" : "active-turn");
+        }
+      });
+    } else {
+      vsBoard.classList.remove("active");
+    }
+
+    document.getElementById("score-title-label").textContent = `${activePlayer.name} 計分板`;
     document.getElementById("rem-score").textContent = game.remScore;
-    document.getElementById("rem-score-label").textContent = game.mode === "PRACTICE" ? "累計總分" : "剩餘分數";
+    document.getElementById("rem-score-label").textContent = game.mode === "PRACTICE" ? "累計總分" : "當前剩餘分數";
     document.getElementById("round-counter").textContent = `第 ${game.roundNumber} 回合`;
     document.getElementById("turn-start-info").textContent =
       game.mode === "PRACTICE" ? "自由累計" : `回合起始：${game.roundStartScore}`;
@@ -2032,7 +2641,8 @@
     const nextRoundBar = document.getElementById("next-round-bar");
     nextRoundBar.style.display = game.state === "BUST" ? "block" : "none";
 
-    document.getElementById("btn-undo").disabled = !game.undoStack || game.undoStack.length === 0 || game.state === "THROWING";
+    document.getElementById("btn-undo").disabled =
+      !game.undoStack || game.undoStack.length === 0 || game.state === "THROWING" || isCurrentTurnBot();
 
     renderSubmodeBar();
     renderTacticalAndNeon();
@@ -2103,14 +2713,14 @@
     }
 
     if (game.state === "WON") {
-      primaryEl.textContent = "🎉 已完成合法 Double Out 結標！";
-      altEl.textContent = "恭喜獲勝！";
+      primaryEl.textContent = `🎉 ${game.winnerName || "玩家"} 已完成合法 Double Out 結標！`;
+      altEl.textContent = "Game Shot, and the Match!";
       return;
     }
 
     if (game.state === "BUST") {
       primaryEl.textContent = "⚠️ 本回合發生 Bust！分數已回復至回合起始值";
-      altEl.textContent = "請點擊「開始下一回合」或使用 Undo 撤銷";
+      altEl.textContent = "請點擊「確認並繼續下一回合」或使用 Undo 撤銷";
       return;
     }
 
@@ -2202,9 +2812,10 @@
       } else if (item.invalidatedByBust) {
         rightBadge = `<span class="badge-bust">因同回合 Bust 失效</span>`;
       }
+      const pTag = item.playerName ? `[${item.playerName}] ` : "";
       return `
         <div class="history-item">
-          <span>R${item.round}-${item.dartIndex}: <strong>${item.hit.label}</strong> ${item.note && item.status === 'VALID' ? item.note : ''}</span>
+          <span>${pTag}R${item.round}-${item.dartIndex}: <strong>${item.hit.label}</strong></span>
           <span>${rightBadge}</span>
         </div>
       `;
@@ -2251,6 +2862,7 @@
       ? ((stats501.checkoutSuccess / stats501.checkoutAttempts) * 100).toFixed(1) + "%"
       : "0.0% (0/0)";
     const fastestStr = stats501.fastestWinMs !== null ? formatTime(stats501.fastestWinMs) : "尚無紀錄";
+    const aw = stats501.awards || { hatTrick: 0, ton80: 0, highTon: 0, lowTon: 0, threeInABed: 0, whiteHorse: 0 };
 
     let challengeRows = "";
     CHALLENGE_TARGETS.forEach(t => {
@@ -2268,11 +2880,18 @@
     box.innerHTML = `
       <h4 style="color:var(--gold); margin-bottom:6px;">🏆 501 標準對局 — 進階統計與個人最佳紀錄</h4>
       <table class="stats-table">
-        <tr><th>完成對局數</th><td>${stats501.completedGames}</td><th>最快勝利時間</th><td>${fastestStr}</td></tr>
+        <tr><th>完成對局數</th><td>${stats501.completedGames}</td><th>AI 對戰戰績</th><td>${stats501.botWins || 0} 勝 / ${stats501.botLosses || 0} 敗</td></tr>
         <tr><th>最高單鏢分數</th><td>${stats501.bestSingleDart}</td><th>最高有效回合分</th><td>${stats501.bestValidRound}</td></tr>
         <tr><th>三鏢平均分 (3DA)</th><td>${avg3Dart}</td><th>每回合平均分</th><td>${avgRound}</td></tr>
         <tr><th>結標成功率</th><td>${checkoutRate}</td><th>最高結標分數</th><td>${stats501.highestCheckout}</td></tr>
-        <tr><th>180 次數</th><td>${stats501.count180}</td><th>Bust 次數</th><td>${stats501.totalBusts}</td></tr>
+        <tr><th>最快勝利時間</th><td>${fastestStr}</td><th>Bust 次數</th><td>${stats501.totalBusts}</td></tr>
+      </table>
+
+      <h4 style="color:var(--cyan); margin:14px 0 6px;">🔥 街機稱號徽章累計 (Arcade Awards)</h4>
+      <table class="stats-table">
+        <tr><th>🔥 TON 80 (180分)</th><td>${aw.ton80} 次</td><th>🎩 HAT TRICK (三牛眼)</th><td>${aw.hatTrick} 次</td></tr>
+        <tr><th>⚡ HIGH TON (151-179)</th><td>${aw.highTon} 次</td><th>✨ LOW TON (100-150)</th><td>${aw.lowTon} 次</td></tr>
+        <tr><th>🎯 THREE IN A BED</th><td>${aw.threeInABed} 次</td><th>🐎 WHITE HORSE</th><td>${aw.whiteHorse} 次</td></tr>
       </table>
 
       <h4 style="color:var(--gold); margin:14px 0 6px;">🎯 練習模式獨立統計（不混入 501 紀錄）</h4>
@@ -2301,14 +2920,17 @@
     const lastThrow = game.allThrows[game.allThrows.length - 1];
     const profile = getActiveDiffProfile();
 
+    document.getElementById("summary-title").textContent = `🏆 對局結束 — ${game.winnerName || "玩家"} 獲勝！`;
+
     body.innerHTML = `
-      <p><strong>模式：</strong>${game.mode === "501" ? "501 標準對局" : `結標挑戰 (${game.challengeTarget}分)`} (${profile.name})</p>
+      <p><strong>獲勝者：</strong><span style="color:var(--gold); font-weight:800;">${game.winnerName || "P1 玩家"}</span></p>
+      <p><strong>對局模式：</strong>${game.mode === "501" ? `501 (${game.matchType})` : `結標挑戰 (${game.challengeTarget}分)`} | ${profile.name}</p>
       <p><strong>完成時間：</strong>${formatTime(game.elapsedMs)}</p>
-      <p><strong>總回合數 / 總用鏢數：</strong>${game.roundNumber} 回合（共 ${game.allThrows.length} 鏢）</p>
-      <p><strong>最後結標鏢：</strong>${lastThrow ? lastThrow.hit.label : "-"}（結標回合起始：${game.roundStartScore} 分）</p>
-      <p><strong>本局單鏢最高分：</strong>${bestDartInMatch} 分</p>
-      <p><strong>本局三鏢平均分：</strong>${avg3} 分</p>
-      <p><strong>本局 Bust 次數：</strong>${bustCountInMatch} 次</p>
+      <p><strong>總回合數 / 總投擲鏢數：</strong>第 ${game.roundNumber} 回合（全場共 ${game.allThrows.length} 鏢）</p>
+      <p><strong>最後致勝結標鏢：</strong>${lastThrow ? lastThrow.hit.label : "-"}</p>
+      <p><strong>全場單鏢最高分：</strong>${bestDartInMatch} 分</p>
+      <p><strong>全場三鏢平均分：</strong>${avg3} 分</p>
+      <p><strong>全場 Bust 次數：</strong>${bustCountInMatch} 次</p>
     `;
     modal.classList.add("active");
   }
@@ -2317,8 +2939,9 @@
    * 14. 事件綁定與初始化流程
    **************************************************************/
   function initEvents() {
-    // 頂部難度快速循環切換按鈕
+    // 頂部難度快速切換
     document.getElementById("btn-quick-diff").addEventListener("click", () => {
+      ensureAudio();
       const order = ["CASUAL", "STANDARD", "PRO"];
       const nextIdx = (order.indexOf(settings.difficulty) + 1) % order.length;
       settings.difficulty = order[nextIdx];
@@ -2327,6 +2950,26 @@
       saveAllState();
       renderAll();
       showToast(`已切換至「${getActiveDiffProfile().name}」檔位`);
+    });
+
+    // 頂部 BGM 快速開關
+    document.getElementById("btn-bgm-toggle").addEventListener("click", () => {
+      ensureAudio();
+      settings.bgm = !settings.bgm;
+      if (settings.bgm) startBgmLoop();
+      else stopBgmLoop();
+      saveAllState();
+      renderAll();
+      showToast(settings.bgm ? "🎵 背景音樂已開啟" : "🎵 背景音樂已關閉");
+    });
+
+    // 頂部裁判語音快速開關
+    document.getElementById("btn-voice-toggle").addEventListener("click", () => {
+      settings.voice = !settings.voice;
+      saveAllState();
+      renderAll();
+      if (settings.voice) speakReferee("Referee voice enabled.");
+      showToast(settings.voice ? "🗣️ 裁判語音唱分已開啟" : "🗣️ 裁判語音唱分已關閉");
     });
 
     const chkHints = document.getElementById("toggle-hints");
@@ -2361,7 +3004,7 @@
       } else if (game.mode === "PRACTICE") {
         game = createNewGame("PRACTICE", game.practiceFilter);
       } else {
-        game = createNewGame("501");
+        game = createNewGame("501", null, game.matchType || "SOLO", game.botLevel || 3);
       }
       saveAllState();
       renderAll();
@@ -2374,11 +3017,13 @@
         game.state = "PLAYING";
         game.timerRunning = true;
         game.lastTickTs = performance.now();
-        document.getElementById("btn-pause").textContent = "⏸ 暫停";
+        document.getElementById("btn-pause").textContent = "⏸";
+        if (isCurrentTurnBot()) scheduleNextBotDart();
       } else if (game.state === "PLAYING") {
+        clearBotTimer();
         game.state = "PAUSED";
         game.timerRunning = false;
-        document.getElementById("btn-pause").textContent = "▶ 繼續";
+        document.getElementById("btn-pause").textContent = "▶";
       }
       saveAllState();
       renderAll();
@@ -2392,26 +3037,54 @@
     document.getElementById("btn-close-menu").addEventListener("click", () => modalMenu.classList.remove("active"));
 
     document.getElementById("btn-resume-saved").addEventListener("click", () => {
+      ensureAudio();
       const saved = loadStorage(STORAGE_KEYS.ACTIVE_GAME, () => null);
       if (saved) {
         game = saved;
+        if (!game.players) {
+          game.players = [{ id: 0, name: "P1 玩家", isBot: false, remScore: game.remScore, roundStartScore: game.roundStartScore }];
+          game.activePlayerIdx = 0;
+        }
         if (game.state === "THROWING") game.state = "PLAYING";
         game.lastTickTs = performance.now();
         game.timerRunning = game.state !== "WON" && game.state !== "PAUSED";
         modalMenu.classList.remove("active");
         renderAll();
+        if (isCurrentTurnBot() && game.state === "PLAYING") scheduleNextBotDart();
         showToast("已恢復未完成對局");
       }
     });
 
     document.getElementById("btn-start-501").addEventListener("click", () => {
-      game = createNewGame("501");
+      ensureAudio();
+      game = createNewGame("501", null, "SOLO");
       modalMenu.classList.remove("active");
+      speakReferee("Game on!");
+      saveAllState();
+      renderAll();
+    });
+
+    document.getElementById("btn-start-vs-bot").addEventListener("click", () => {
+      ensureAudio();
+      const lvl = parseInt(document.getElementById("sel-bot-level").value, 10) || 3;
+      game = createNewGame("501", null, "VS_BOT", lvl);
+      modalMenu.classList.remove("active");
+      speakReferee("Player one, vs Dart Bot. Game on!");
+      saveAllState();
+      renderAll();
+    });
+
+    document.getElementById("btn-start-vs-local").addEventListener("click", () => {
+      ensureAudio();
+      game = createNewGame("501", null, "VS_LOCAL");
+      modalMenu.classList.remove("active");
+      speakReferee("Two player match. Game on!");
       saveAllState();
       renderAll();
     });
 
     document.getElementById("btn-start-practice").addEventListener("click", () => {
+      ensureAudio();
       game = createNewGame("PRACTICE", "FREE");
       modalMenu.classList.remove("active");
       saveAllState();
@@ -2419,6 +3092,7 @@
     });
 
     document.getElementById("btn-start-challenge").addEventListener("click", () => {
+      ensureAudio();
       game = createNewGame("CHALLENGE", 40);
       modalMenu.classList.remove("active");
       saveAllState();
@@ -2435,7 +3109,7 @@
     document.getElementById("btn-close-stats-bottom").addEventListener("click", () => modalStats.classList.remove("active"));
 
     document.getElementById("btn-reset-records").addEventListener("click", () => {
-      if (!confirm("確定要重設所有個人統計與最佳紀錄嗎？（目前進行中的對局不會被刪除）")) return;
+      if (!confirm("確定要重設所有個人統計、街機稱號與最佳紀錄嗎？（目前進行中的對局不會被刪除）")) return;
       stats501 = defaultStats501();
       statsPractice = defaultStatsPractice();
       statsChallenge = defaultStatsChallenge();
@@ -2448,6 +3122,11 @@
     function openSettingsModal() {
       document.getElementById("sel-difficulty").value = settings.difficulty || "STANDARD";
       document.getElementById("sel-ctrl-mode").value = settings.controlMode;
+      document.getElementById("chk-bgm").checked = Boolean(settings.bgm);
+      document.getElementById("sel-bgm-style").value = settings.bgmStyle || "LOFI";
+      document.getElementById("rng-bgm-vol").value = settings.bgmVolume ?? 0.45;
+      document.getElementById("val-bgm-vol").textContent = Math.round((settings.bgmVolume ?? 0.45) * 100) + "%";
+      document.getElementById("chk-voice").checked = Boolean(settings.voice);
       document.getElementById("rng-power").value = settings.powerSens;
       document.getElementById("val-power").textContent = settings.powerSens.toFixed(2);
       document.getElementById("rng-x-sens").value = settings.xSens;
@@ -2477,20 +3156,29 @@
     document.getElementById("rng-volume").addEventListener("input", (e) => {
       document.getElementById("val-vol").textContent = Math.round(parseFloat(e.target.value) * 100) + "%";
     });
+    document.getElementById("rng-bgm-vol").addEventListener("input", (e) => {
+      document.getElementById("val-bgm-vol").textContent = Math.round(parseFloat(e.target.value) * 100) + "%";
+    });
 
     document.getElementById("btn-reset-defaults").addEventListener("click", () => {
       settings = defaultSettings();
       openSettingsModal();
+      startBgmLoop();
       saveAllState();
       renderAll();
-      showToast("已恢復預設難度、操作與音效設定");
+      showToast("已恢復預設設定");
     });
 
     document.getElementById("btn-save-settings").addEventListener("click", () => {
+      ensureAudio();
       swipeState.active = false;
       previewLayer.innerHTML = "";
       settings.difficulty = document.getElementById("sel-difficulty").value;
       settings.controlMode = document.getElementById("sel-ctrl-mode").value;
+      settings.bgm = document.getElementById("chk-bgm").checked;
+      settings.bgmStyle = document.getElementById("sel-bgm-style").value;
+      settings.bgmVolume = parseFloat(document.getElementById("rng-bgm-vol").value);
+      settings.voice = document.getElementById("chk-voice").checked;
       settings.powerSens = parseFloat(document.getElementById("rng-power").value);
       settings.xSens = parseFloat(document.getElementById("rng-x-sens").value);
       settings.breathing = document.getElementById("chk-breathing").checked;
@@ -2498,6 +3186,10 @@
       settings.sound = document.getElementById("chk-sound").checked;
       settings.volume = parseFloat(document.getElementById("rng-volume").value);
       settings.animLevel = document.getElementById("sel-anim").value;
+
+      if (settings.bgm) startBgmLoop();
+      else stopBgmLoop();
+
       modalSettings.classList.remove("active");
       saveAllState();
       renderAll();
@@ -2508,12 +3200,16 @@
       document.getElementById("modal-summary").classList.remove("active");
       if (game && game.mode === "CHALLENGE") {
         game = createNewGame("CHALLENGE", game.challengeTarget);
+      } else if (game) {
+        game = createNewGame("501", null, game.matchType || "SOLO", game.botLevel || 3);
       } else {
         game = createNewGame("501");
       }
+      speakReferee("Game on!");
       saveAllState();
       renderAll();
     });
+
     document.getElementById("btn-summary-menu").addEventListener("click", () => {
       document.getElementById("modal-summary").classList.remove("active");
       modalMenu.classList.add("active");
@@ -2545,12 +3241,18 @@
     const savedGame = loadStorage(STORAGE_KEYS.ACTIVE_GAME, () => null);
     if (savedGame && savedGame.matchId) {
       game = savedGame;
+      if (!game.players) {
+        game.players = [{ id: 0, name: "P1 玩家", isBot: false, remScore: game.remScore, roundStartScore: game.roundStartScore }];
+        game.activePlayerIdx = 0;
+      }
       if (game.state === "THROWING") game.state = "PLAYING";
       game.lastTickTs = performance.now();
       game.timerRunning = game.state !== "WON" && game.state !== "PAUSED";
       if (game.state !== "WON" && game.allThrows && game.allThrows.length > 0) {
         document.getElementById("btn-resume-saved").style.display = "inline-flex";
         document.getElementById("modal-menu").classList.add("active");
+      } else if (isCurrentTurnBot() && game.state === "PLAYING") {
+        scheduleNextBotDart();
       }
     } else {
       game = createNewGame("501");
